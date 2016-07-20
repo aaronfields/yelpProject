@@ -19,6 +19,7 @@ import android.view.animation.LinearInterpolator;
 
 import com.yelp.clientlib.connection.YelpAPI;
 import com.yelp.clientlib.connection.YelpAPIFactory;
+import com.yelp.clientlib.entities.Business;
 import com.yelp.clientlib.entities.SearchResponse;
 import com.yelp.clientlib.entities.options.BoundingBoxOptions;
 import com.yelp.clientlib.entities.options.CoordinateOptions;
@@ -145,9 +146,24 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("RESPONSE", "154: " + all.toString());
                     Pattern p = Pattern.compile("(?is)\"src_high_res\": \"(.+?)\"");
                     Matcher m = p.matcher(all.toString());
+
+                    Call <Business> call2 = yelpAPI.getBusiness(id);
+                    Response<Business> response2 = null;
+                    try {
+                        response2 = call2.execute();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    Log.d("SEARCH", "yelp: "+response2.body());
+
+                    String restaurantName = "";
+
+                    restaurantName = response2.body().name();
+
                     int i = 0;
                     while (m.find() && (i < 16)) {
-                        Food itemUrl = new Food("http:" + m.group(1), id);
+                        Food itemUrl = new Food("http:" + m.group(1), id, restaurantName);
                         //Log.d(TAG, "doInBackground: "+itemUrl);
                         foodList.add(itemUrl);
                         i++;
@@ -246,6 +262,9 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+
+
             Log.d("SEARCH", "yelp: "+response.body().businesses().size());
             ArrayList<String> businessId = new ArrayList<>();
 

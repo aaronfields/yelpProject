@@ -73,7 +73,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.myVi
 
             itemView.setOnClickListener(this);
             mImage = (ImageView) itemView.findViewById(R.id.imageView);
-            mName = (TextView) itemView.findViewById(R.id.textView);
+           // mName = (TextView) itemView.findViewById(R.id.textView);
 
         }
 

@@ -8,6 +8,7 @@ public class Food {
     protected String foodPic;
     protected String restaurantName;
     protected String foodId;
+
     public Food(){
 
     }

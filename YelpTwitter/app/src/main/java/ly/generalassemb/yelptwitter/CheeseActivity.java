@@ -1,6 +1,5 @@
 package ly.generalassemb.yelptwitter;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -32,6 +31,8 @@ public class CheeseActivity extends AppCompatActivity {
     String businessId;
     TextView textView;
     Call<Business> call;
+    BusinessYelpApp businessForDisplay;
+    CollapsingToolbarLayout collapsingToolbar;
 
     public static final String EXTRA_NAME = "restaurant_name";
     private static final String SEARCH_QUERY = "#truefoodkitchen";
@@ -41,7 +42,7 @@ public class CheeseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheese);
 
-        textView = (TextView)findViewById(R.id.textView);
+        //textView = (TextView)findViewById(R.id.textView);
 
         Intent intent = getIntent();
         businessId = intent.getStringExtra("name_id");
@@ -49,20 +50,20 @@ public class CheeseActivity extends AppCompatActivity {
         yelpAPI = MainActivity.yelpAPI;
         call = yelpAPI.getBusiness(businessId);
 
-        textView.setText(businessId);
+        //textView.setText(businessId);
 
         new BusinessInfoTask().execute();
 
-        Intent intent = getIntent();
-        final String restaurantName = intent.getStringExtra(EXTRA_NAME);
+//        Intent intent = getIntent();
+//        final String restaurantName = intent.getStringExtra(EXTRA_NAME);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        CollapsingToolbarLayout collapsingToolbar =
+        collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(restaurantName);
+
 
 //        loadBackdrop();
 
@@ -132,6 +133,9 @@ public class CheeseActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(BusinessYelpApp business) {
             super.onPostExecute(business);
+
+            businessForDisplay = business;
+            collapsingToolbar.setTitle(businessForDisplay.getmName());
 
         }
     }
