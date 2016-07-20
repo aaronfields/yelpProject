@@ -163,14 +163,14 @@ public class CheeseActivity extends AppCompatActivity {
             for (int i = 0; i < imageUrls.size(); i++) {
                 ImageView imageView = new ImageView(CheeseActivity.this);
                 imageView.setId(i);
-//            imageView.setPadding(4, 4, 4, 4);
-//            imageView.setImageBitmap(BitmapFactory.decodeResource(
-//                    getResources(), R.drawable.hemingway));
-                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+//
+                int height= layout.getMeasuredHeight();
+                layout.addView(imageView, height, height);
                 Picasso.with(CheeseActivity.this)
                         .load(imageUrls.get(i))
+                        .resize(height, height)
+                        .centerCrop()
                         .into(imageView);
-                layout.addView(imageView);
             }
 
         }
@@ -187,15 +187,24 @@ public class CheeseActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_save:
                 //TODO: Save to Firebase
+                ResultsSingleton.getInstance().getUserName();
+                ResultsSingleton.getInstance().getUserID();
                 Toast.makeText(CheeseActivity.this, "Added!", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.action_menu:
+                //TODO: If there's a menu link, provide it
                 break;
             case R.id.action_map:
                 //TODO: Go to google maps with address
+                double mLatitude = ResultsSingleton.getInstance().getLatitude();
+                double mLongitude = ResultsSingleton.getInstance().getLatitude();
+                Intent mapIntent = new Intent(CheeseActivity.this, LikesActivity.class);
+                mapIntent.putExtra("latitude", mLatitude);
+                mapIntent.putExtra("longitude", mLongitude);
                 break;
             case R.id.action_likes:
-                //TODO: Go to LikesActivity
+                Intent intent = new Intent(CheeseActivity.this, LikesActivity.class);
+                startActivity(intent);
                 break;
 
         }
@@ -288,3 +297,4 @@ public class CheeseActivity extends AppCompatActivity {
 //
 //}
 //
+

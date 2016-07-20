@@ -110,6 +110,12 @@ public class MainActivity extends AppCompatActivity {
                 .latitude(37.7577)
                 .longitude(-122.4376).build();
 
+        double mLatitude = coordinate.latitude();
+        double mLongitude = coordinate.longitude();
+
+        ResultsSingleton.getInstance().setLatitude(mLatitude);
+        ResultsSingleton.getInstance().setLongitude(mLongitude);
+
 //        bounds = BoundingBoxOptions.builder()
 //                .swLatitude(37.7)
 //                .swLongitude(-122.4376)
@@ -332,6 +338,9 @@ public class MainActivity extends AppCompatActivity {
             if(resultCode == Activity.RESULT_OK){
                 String username=data.getStringExtra("username");
                 String twitterId=data.getStringExtra("twitterId");
+
+                ResultsSingleton.getInstance().setUserName(username);
+                ResultsSingleton.getInstance().setUserID(twitterId);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
