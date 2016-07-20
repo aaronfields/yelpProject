@@ -53,9 +53,6 @@ public class CheeseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheese);
 
-        //textView = (TextView)findViewById(R.id.textView);
-
-
         Intent intent = getIntent();
         businessId = intent.getStringExtra("name_id");
         imageURL = intent.getStringExtra("image_url");
@@ -63,12 +60,7 @@ public class CheeseActivity extends AppCompatActivity {
         yelpAPI = MainActivity.yelpAPI;
         call = yelpAPI.getBusiness(businessId);
 
-        //textView.setText(businessId);
-
         new BusinessInfoTask().execute();
-
-//        Intent intent = getIntent();
-//        final String restaurantName = intent.getStringExtra(EXTRA_NAME);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -76,9 +68,6 @@ public class CheeseActivity extends AppCompatActivity {
 
         collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-
-
-//        loadBackdrop();
 
         final SearchTimeline searchTimeline = new SearchTimeline.Builder()
                 .query(SEARCH_QUERY)
@@ -93,19 +82,6 @@ public class CheeseActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             listView.setNestedScrollingEnabled(true);
         }
-
-//        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-//        viewPager.setAdapter(new CustomPagerAdapter(this));
-
-//        File myImageFile = new File("/path/to/image");
-//        Uri myImageUri = Uri.fromFile(myImageFile);
-//
-//        TweetComposer.Builder builder = new TweetComposer.Builder(this)
-//                .text("just setting up my Fabric.")
-//                .image(myImageUri);
-//        builder.show();
-
-
 
     }
 
@@ -212,89 +188,4 @@ public class CheeseActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 }
-
-
-//    private void loadBackdrop() {
-//        final ImageView imageView = (ImageView) findViewById(R.id.backdrop);
-
-        //Glide.with(this).load(Cheeses.getRandomCheeseDrawable()).centerCrop().into(imageView);
-//    }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.sample_actions, menu);
-//        return true;
-//    }
-
-
-
-//    public enum CustomPagerEnum {;
-//
-////        RED(R.string.red, R.layout.view_red),
-////        BLUE(R.string.blue, R.layout.view_blue),
-////        ORANGE(R.string.orange, R.layout.view_orange);
-//
-//        private int mTitleResId;
-//        private int mLayoutResId;
-//
-//        CustomPagerEnum(int titleResId, int layoutResId) {
-//            mTitleResId = titleResId;
-//            mLayoutResId = layoutResId;
-//        }
-//
-//        public int getTitleResId() {
-//            return mTitleResId;
-//        }
-//
-//        public int getLayoutResId() {
-//            return mLayoutResId;
-//        }
-//
-//    }
-//
-//
-//    public class CustomPagerAdapter extends PagerAdapter {
-//
-//        private Context mContext;
-//
-//        public CustomPagerAdapter(Context context) {
-//            mContext = context;
-//        }
-//
-//        @Override
-//        public Object instantiateItem(ViewGroup collection, int position) {
-//            CustomPagerEnum customPagerEnum = CustomPagerEnum.values()[position];
-//            LayoutInflater inflater = LayoutInflater.from(mContext);
-//            ViewGroup layout = (ViewGroup) inflater.inflate(customPagerEnum.getLayoutResId(), collection, false);
-//            collection.addView(layout);
-//            return layout;
-//        }
-//
-//        @Override
-//        public void destroyItem(ViewGroup collection, int position, Object view) {
-//            collection.removeView((View) view);
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return CustomPagerEnum.values().length;
-//        }
-//
-//        @Override
-//        public boolean isViewFromObject(View view, Object object) {
-//            return view == object;
-//        }
-//
-//        @Override
-//        public CharSequence getPageTitle(int position) {
-//            CustomPagerEnum customPagerEnum = CustomPagerEnum.values()[position];
-//            return mContext.getString(customPagerEnum.getTitleResId());
-//        }
-//
-//    }
-//
-//
-//
-//}
-//
 
