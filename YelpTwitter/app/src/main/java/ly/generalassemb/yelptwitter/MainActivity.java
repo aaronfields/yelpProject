@@ -1,8 +1,11 @@
 package ly.generalassemb.yelptwitter;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -63,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent i = new Intent(this, LoginActivity.class);
+        startActivityForResult(i, 1);
 
         tToolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -320,6 +326,20 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                String username=data.getStringExtra("username");
+                String twitterId=data.getStringExtra("twitterId");
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }//onActivityResult
 
 
 }

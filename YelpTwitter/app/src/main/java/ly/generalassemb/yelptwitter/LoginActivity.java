@@ -1,5 +1,6 @@
 package ly.generalassemb.yelptwitter;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -79,10 +80,17 @@ public class LoginActivity extends AppCompatActivity {
                 twitter_userId = session.getUserId();
                 twitter_image_url = " https://twitter.com/" + twitter_username + "/profile_image?size=original";
 
-                Intent intent = new Intent(LoginActivity.this, CheeseActivity.class);
-                intent.putExtra(KEY_USERNAME, twitter_username);
-                intent.putExtra(KEY_USERID, twitter_userId);
-                startActivity(intent);
+//                Intent intent = new Intent(LoginActivity.this, CheeseActivity.class);
+//                intent.putExtra(KEY_USERNAME, twitter_username);
+//                intent.putExtra(KEY_USERID, twitter_userId);
+//                startActivity(intent);
+
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("username",twitter_username);
+                returnIntent.putExtra("twitterId", twitter_userId);
+                setResult(Activity.RESULT_OK,returnIntent);
+                finish();
+
 
 
             }
