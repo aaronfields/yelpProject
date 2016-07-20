@@ -269,8 +269,6 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-
-
             Log.d("SEARCH", "yelp: "+response.body().businesses().size());
             ArrayList<String> businessId = new ArrayList<>();
 
