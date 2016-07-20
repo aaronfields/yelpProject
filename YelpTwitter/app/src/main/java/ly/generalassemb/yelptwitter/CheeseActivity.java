@@ -9,10 +9,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.tweetui.SearchTimeline;
@@ -36,6 +38,7 @@ public class CheeseActivity extends AppCompatActivity {
 
     YelpAPI yelpAPI;
     String businessId;
+    String imageURL;
     TextView textView;
     Call<Business> call;
     BusinessYelpApp businessForDisplay;
@@ -50,21 +53,14 @@ public class CheeseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheese);
 
-        //textView = (TextView)findViewById(R.id.textView);
-
-
         Intent intent = getIntent();
         businessId = intent.getStringExtra("name_id");
+        imageURL = intent.getStringExtra("image_url");
 
         yelpAPI = MainActivity.yelpAPI;
         call = yelpAPI.getBusiness(businessId);
 
-        //textView.setText(businessId);
-
         new BusinessInfoTask().execute();
-
-//        Intent intent = getIntent();
-//        final String restaurantName = intent.getStringExtra(EXTRA_NAME);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -72,9 +68,6 @@ public class CheeseActivity extends AppCompatActivity {
 
         collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-
-
-//        loadBackdrop();
 
         final SearchTimeline searchTimeline = new SearchTimeline.Builder()
                 .query(SEARCH_QUERY)
@@ -89,19 +82,6 @@ public class CheeseActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             listView.setNestedScrollingEnabled(true);
         }
-
-//        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-//        viewPager.setAdapter(new CustomPagerAdapter(this));
-
-//        File myImageFile = new File("/path/to/image");
-//        Uri myImageUri = Uri.fromFile(myImageFile);
-//
-//        TweetComposer.Builder builder = new TweetComposer.Builder(this)
-//                .text("just setting up my Fabric.")
-//                .image(myImageUri);
-//        builder.show();
-
-
 
     }
 
@@ -178,4 +158,34 @@ public class CheeseActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                //TODO: Save to Firebase
+                ResultsSingleton.getInstance().getUserName();
+                ResultsSingleton.getInstance().getUserID();
+                Toast.makeText(CheeseActivity.this, "Added!", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.action_menu:
+                //TODO: If there's a menu link, provide it
+                break;
+            case R.id.action_map:
+                //TODO: Go to google maps with address
+                double mLatitude = ResultsSingleton.getInstance().getLatitude();
+                double mLongitude = ResultsSingleton.getInstance().getLatitude();
+                Intent mapIntent = new Intent(CheeseActivity.this, LikesActivity.class);
+                mapIntent.putExtra("latitude", mLatitude);
+                mapIntent.putExtra("longitude", mLongitude);
+                break;
+            case R.id.action_likes:
+                Intent intent = new Intent(CheeseActivity.this, LikesActivity.class);
+                startActivity(intent);
+                break;
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }
+
