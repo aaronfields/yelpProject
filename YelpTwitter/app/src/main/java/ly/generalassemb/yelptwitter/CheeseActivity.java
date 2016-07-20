@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -162,6 +163,7 @@ public class CheeseActivity extends AppCompatActivity {
 //            imageView.setPadding(4, 4, 4, 4);
 //            imageView.setImageBitmap(BitmapFactory.decodeResource(
 //                    getResources(), R.drawable.hemingway));
+                imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 imageView.setScaleType(ImageView.ScaleType.FIT_XY);
                 Picasso.with(CheeseActivity.this)
                         .load(imageUrls.get(i))
