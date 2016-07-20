@@ -1,7 +1,6 @@
 package ly.generalassemb.yelptwitter;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,12 +14,20 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.tweetui.SearchTimeline;
 import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
 import com.yelp.clientlib.connection.YelpAPI;
 import com.yelp.clientlib.entities.Business;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -33,6 +40,7 @@ public class CheeseActivity extends AppCompatActivity {
     Call<Business> call;
     BusinessYelpApp businessForDisplay;
     CollapsingToolbarLayout collapsingToolbar;
+    ArrayList<String> imageUrls;
 
     public static final String EXTRA_NAME = "restaurant_name";
     private static final String SEARCH_QUERY = "#truefoodkitchen";
@@ -43,6 +51,7 @@ public class CheeseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cheese);
 
         //textView = (TextView)findViewById(R.id.textView);
+
 
         Intent intent = getIntent();
         businessId = intent.getStringExtra("name_id");
@@ -92,16 +101,7 @@ public class CheeseActivity extends AppCompatActivity {
 //                .image(myImageUri);
 //        builder.show();
 
-        LinearLayout layout = (LinearLayout) findViewById(R.id.linear);
-        for (int i = 0; i < 16; i++) {
-            ImageView imageView = new ImageView(this);
-            imageView.setId(i);
-//            imageView.setPadding(4, 4, 4, 4);
-            imageView.setImageBitmap(BitmapFactory.decodeResource(
-                    getResources(), R.drawable.hemingway));
-            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            layout.addView(imageView);
-        }
+
 
     }
 
@@ -127,6 +127,24 @@ public class CheeseActivity extends AppCompatActivity {
             Log.d("SEARCH", "yelp: "+address);
             BusinessYelpApp business = new BusinessYelpApp(response.body().name(), response.body().ratingImgUrl(), address);
 
+            Document doc = null;
+            try {
+                doc = Jsoup.connect("http://www.yelp.com/biz_photos/" + businessId + "?tab=food").get();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Elements all = doc.getAllElements();
+            Log.d("RESPONSE", "154: " + all.toString());
+            Pattern p = Pattern.compile("(?is)\"src_high_res\": \"(.+?)\"");
+            Matcher m = p.matcher(all.toString());
+            imageUrls = new ArrayList<>();
+            int i = 0;
+            while (m.find() && (i < 16)) {
+                imageUrls.add("http:"+m.group(1));
+                i++;
+            }
+
             return business;
         }
 
@@ -136,6 +154,20 @@ public class CheeseActivity extends AppCompatActivity {
 
             businessForDisplay = business;
             collapsingToolbar.setTitle(businessForDisplay.getmName());
+
+            LinearLayout layout = (LinearLayout) findViewById(R.id.linear);
+            for (int i = 0; i < imageUrls.size(); i++) {
+                ImageView imageView = new ImageView(CheeseActivity.this);
+                imageView.setId(i);
+//            imageView.setPadding(4, 4, 4, 4);
+//            imageView.setImageBitmap(BitmapFactory.decodeResource(
+//                    getResources(), R.drawable.hemingway));
+                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                Picasso.with(CheeseActivity.this)
+                        .load(imageUrls.get(i))
+                        .into(imageView);
+                layout.addView(imageView);
+            }
 
         }
     }
