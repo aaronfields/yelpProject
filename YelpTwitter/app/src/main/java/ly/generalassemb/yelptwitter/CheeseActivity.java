@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -160,15 +159,14 @@ public class CheeseActivity extends AppCompatActivity {
             for (int i = 0; i < imageUrls.size(); i++) {
                 ImageView imageView = new ImageView(CheeseActivity.this);
                 imageView.setId(i);
-//            imageView.setPadding(4, 4, 4, 4);
-//            imageView.setImageBitmap(BitmapFactory.decodeResource(
-//                    getResources(), R.drawable.hemingway));
-                imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+//
+                int height= layout.getMeasuredHeight();
+                layout.addView(imageView, height, height);
                 Picasso.with(CheeseActivity.this)
                         .load(imageUrls.get(i))
+                        .resize(height, height)
+                        .centerCrop()
                         .into(imageView);
-                layout.addView(imageView);
             }
 
         }
@@ -181,88 +179,3 @@ public class CheeseActivity extends AppCompatActivity {
     }
 
 }
-
-
-//    private void loadBackdrop() {
-//        final ImageView imageView = (ImageView) findViewById(R.id.backdrop);
-
-        //Glide.with(this).load(Cheeses.getRandomCheeseDrawable()).centerCrop().into(imageView);
-//    }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.sample_actions, menu);
-//        return true;
-//    }
-
-
-
-//    public enum CustomPagerEnum {;
-//
-////        RED(R.string.red, R.layout.view_red),
-////        BLUE(R.string.blue, R.layout.view_blue),
-////        ORANGE(R.string.orange, R.layout.view_orange);
-//
-//        private int mTitleResId;
-//        private int mLayoutResId;
-//
-//        CustomPagerEnum(int titleResId, int layoutResId) {
-//            mTitleResId = titleResId;
-//            mLayoutResId = layoutResId;
-//        }
-//
-//        public int getTitleResId() {
-//            return mTitleResId;
-//        }
-//
-//        public int getLayoutResId() {
-//            return mLayoutResId;
-//        }
-//
-//    }
-//
-//
-//    public class CustomPagerAdapter extends PagerAdapter {
-//
-//        private Context mContext;
-//
-//        public CustomPagerAdapter(Context context) {
-//            mContext = context;
-//        }
-//
-//        @Override
-//        public Object instantiateItem(ViewGroup collection, int position) {
-//            CustomPagerEnum customPagerEnum = CustomPagerEnum.values()[position];
-//            LayoutInflater inflater = LayoutInflater.from(mContext);
-//            ViewGroup layout = (ViewGroup) inflater.inflate(customPagerEnum.getLayoutResId(), collection, false);
-//            collection.addView(layout);
-//            return layout;
-//        }
-//
-//        @Override
-//        public void destroyItem(ViewGroup collection, int position, Object view) {
-//            collection.removeView((View) view);
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return CustomPagerEnum.values().length;
-//        }
-//
-//        @Override
-//        public boolean isViewFromObject(View view, Object object) {
-//            return view == object;
-//        }
-//
-//        @Override
-//        public CharSequence getPageTitle(int position) {
-//            CustomPagerEnum customPagerEnum = CustomPagerEnum.values()[position];
-//            return mContext.getString(customPagerEnum.getTitleResId());
-//        }
-//
-//    }
-//
-//
-//
-//}
-//
