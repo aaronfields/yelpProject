@@ -10,10 +10,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.twitter.sdk.android.tweetui.SearchTimeline;
 import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
@@ -29,6 +31,7 @@ public class CheeseActivity extends AppCompatActivity {
 
     YelpAPI yelpAPI;
     String businessId;
+    String imageURL;
     TextView textView;
     Call<Business> call;
     BusinessYelpApp businessForDisplay;
@@ -46,6 +49,7 @@ public class CheeseActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         businessId = intent.getStringExtra("name_id");
+        imageURL = intent.getStringExtra("image_url");
 
         yelpAPI = MainActivity.yelpAPI;
         call = yelpAPI.getBusiness(businessId);
@@ -146,6 +150,26 @@ public class CheeseActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                //TODO: Save to Firebase
+                Toast.makeText(CheeseActivity.this, "Added!", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.action_menu:
+                break;
+            case R.id.action_map:
+                //TODO: Go to google maps with address
+                break;
+            case R.id.action_likes:
+                //TODO: Go to LikesActivity
+                break;
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }
 
 
