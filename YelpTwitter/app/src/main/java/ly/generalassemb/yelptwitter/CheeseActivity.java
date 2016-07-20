@@ -53,7 +53,7 @@ public class CheeseActivity extends AppCompatActivity {
 
         new BusinessInfoTask().execute();
 
-        Intent intent = getIntent();
+//        Intent intent = getIntent();
         final String restaurantName = intent.getStringExtra(EXTRA_NAME);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

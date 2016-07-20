@@ -37,17 +37,6 @@ public class LocationActivity extends AppCompatActivity implements GoogleApiClie
 
 
 
-    /*   mGoogleApiClient = new GoogleApiClient.Builder(this)
-               .enableAutoManage(this ​*//*​ AppCompatActivity ​*//*​,
-                       this ​*//*​ OnConnectionFailedListener ​*//*​)
-               .addApi()
-               .build();
-
-               AnalyticsApplication application = (AnalyticsApplication) getApplication();
-       mTracker = application.getDefaultTracker();
-*/
-
-
     }
 
 

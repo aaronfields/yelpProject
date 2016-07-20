@@ -6,7 +6,7 @@
                                     android:layout_height="wrap_content"
 
                                     android:clickable="true"
-                                    android:background="#5ea2e9 "
+                                    android:background="#5ea2e9"
                                     android.support.v7.cardview:cardBackgroundColor="#ffffff"
     >
 
