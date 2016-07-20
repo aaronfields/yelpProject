@@ -1,0 +1,306 @@
+package ly.generalassemb.yelptwitter;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.animation.LinearInterpolator;
+
+import com.yelp.clientlib.connection.YelpAPI;
+import com.yelp.clientlib.connection.YelpAPIFactory;
+import com.yelp.clientlib.entities.SearchResponse;
+import com.yelp.clientlib.entities.options.BoundingBoxOptions;
+import com.yelp.clientlib.entities.options.CoordinateOptions;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import retrofit2.Call;
+import retrofit2.Response;
+
+public class MainActivity extends AppCompatActivity {
+
+    Toolbar tToolbar;
+    PhotoGridAdapter mAdapter;
+    RecyclerView mRecyclerView;
+    RecyclerView.LayoutManager mLayoutManager;
+    ArrayList<Food> foodList;
+    Call<SearchResponse> call;
+    private static final String consumerKey = "4r7d1XOhHp9RI7xbyl3fBw";
+    private static final String consumerSecret = "lZSxJRqOFRiHOPoUS2q_qo3CavU";
+    private static final String token = "c8lFr2mAjc_qbj5UiAacTXKHyErSel5N";
+    private static final String tokenSecret = "0pbBMj01CB51_wXbnqphQCUFRNA";
+    Map<String, String> parameters;
+    public static YelpAPI yelpAPI;
+    CoordinateOptions coordinate;
+    BoundingBoxOptions bounds;
+    String location;
+    SwipeRefreshLayout swipeLayout;
+    private static final int TOOLBAR_ELEVATION = 4;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        tToolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override public void run() {
+                        swipeLayout.setRefreshing(false);
+                    }
+                }, 5000);
+            }
+        });
+        swipeLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+
+        foodList = new ArrayList<>();
+
+        YelpAPIFactory apiFactory = new YelpAPIFactory(consumerKey, consumerSecret, token, tokenSecret);
+        yelpAPI = apiFactory.createAPI();
+
+        parameters = new HashMap<>();
+
+// general params
+        parameters.put("term", "food");
+        parameters.put("limit", "20");
+        location = "Austin, tx";
+
+
+// locale params
+        //params.put("lang", "fr");
+//
+        coordinate = CoordinateOptions.builder()
+                .latitude(37.7577)
+                .longitude(-122.4376).build();
+
+//        bounds = BoundingBoxOptions.builder()
+//                .swLatitude(37.7)
+//                .swLongitude(-122.4376)
+//                .neLatitude(37.785381)
+//                .neLongitude(-122.331681).build();
+
+        call = yelpAPI.search(coordinate, parameters);
+
+        //new DownloadUrlTask().execute();
+
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Log.d("SEARCH", "onCreate: You are connected");
+            new SearchBusinessesTask().execute();
+        } else {
+            Log.d("SEARCH", "onCreate: You are not connected");
+        }
+
+
+        //Collections.shuffle(List)
+
+
+    }
+
+
+
+
+    private class DownloadUrlTask extends AsyncTask<ArrayList<String>, Void, Void> {
+
+        @Override
+        protected Void doInBackground(ArrayList<String>... ids) {
+
+            try {
+                for(String id:ids[0]) {
+//
+                    Document doc = Jsoup.connect("http://www.yelp.com/biz_photos/" + id + "?tab=food").get();
+
+                    Elements all = doc.getAllElements();
+                    Log.d("RESPONSE", "154: " + all.toString());
+                    Pattern p = Pattern.compile("(?is)\"src_high_res\": \"(.+?)\"");
+                    Matcher m = p.matcher(all.toString());
+                    int i = 0;
+                    while (m.find() && (i < 16)) {
+                        Food itemUrl = new Food("http:" + m.group(1), id);
+                        //Log.d(TAG, "doInBackground: "+itemUrl);
+                        foodList.add(itemUrl);
+                        i++;
+                    }
+                }
+
+                return null;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Collections.shuffle(foodList);
+            ResultsSingleton.getInstance().setFoodArrayList(foodList);
+            mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+            mLayoutManager = new GridLayoutManager(MainActivity.this, 3);
+            mRecyclerView.setLayoutManager(mLayoutManager);
+            mAdapter = new PhotoGridAdapter(foodList,MainActivity.this);
+            mRecyclerView.setAdapter(mAdapter);
+
+            // We need to detect scrolling changes in the RecyclerView
+            mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+
+                // Keeps track of the overall vertical offset in the list
+                int verticalOffset;
+
+                // Determines the scroll UP/DOWN direction
+                boolean scrollingUp;
+
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        if (scrollingUp) {
+                            if (verticalOffset > tToolbar.getHeight()) {
+                                toolbarAnimateHide();
+                            } else {
+                                toolbarAnimateShow(verticalOffset);
+                            }
+                        } else {
+                            if (tToolbar.getTranslationY() < tToolbar.getHeight() * -0.6 && verticalOffset > tToolbar.getHeight()) {
+                                toolbarAnimateHide();
+                            } else {
+                                toolbarAnimateShow(verticalOffset);
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public final void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    verticalOffset += dy;
+                    scrollingUp = dy > 0;
+                    int toolbarYOffset = (int) (dy - tToolbar.getTranslationY());
+                    tToolbar.animate().cancel();
+                    if (scrollingUp) {
+                        if (toolbarYOffset < tToolbar.getHeight()) {
+                            if (verticalOffset > tToolbar.getHeight()) {
+                                toolbarSetElevation(TOOLBAR_ELEVATION);
+                            }
+                            tToolbar.setTranslationY(-toolbarYOffset);
+                        } else {
+                            toolbarSetElevation(0);
+                            tToolbar.setTranslationY(-tToolbar.getHeight());
+                        }
+                    } else {
+                        if (toolbarYOffset < 0) {
+                            if (verticalOffset <= 0) {
+                                toolbarSetElevation(0);
+                            }
+                            tToolbar.setTranslationY(0);
+                        } else {
+                            if (verticalOffset > tToolbar.getHeight()) {
+                                toolbarSetElevation(TOOLBAR_ELEVATION);
+                            }
+                            tToolbar.setTranslationY(-toolbarYOffset);
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    private class SearchBusinessesTask extends AsyncTask<Void, Void, ArrayList<String>> {
+        @Override
+        protected ArrayList<String> doInBackground(Void... voids) {
+
+            Response<SearchResponse> response = null;
+            try {
+                response = call.execute();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Log.d("SEARCH", "yelp: "+response.body().businesses().size());
+            ArrayList<String> businessId = new ArrayList<>();
+
+            for(int i = 0; i<response.body().businesses().size(); i++){
+                String id = response.body().businesses().get(i).id();
+                businessId.add(id);
+            }
+
+            return businessId;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<String> ids) {
+            super.onPostExecute(ids);
+
+            new DownloadUrlTask().execute(ids);
+
+
+
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void toolbarSetElevation(float elevation) {
+        // setElevation() only works on Lollipop
+        if (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
+            tToolbar.setElevation(elevation);
+        }
+    }
+
+    private void toolbarAnimateShow(final int verticalOffset) {
+        tToolbar.animate()
+                .translationY(0)
+                .setInterpolator(new LinearInterpolator())
+                .setDuration(180)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        toolbarSetElevation(verticalOffset == 0 ? 0 : TOOLBAR_ELEVATION);
+                    }
+                });
+    }
+
+    private void toolbarAnimateHide() {
+        tToolbar.animate()
+                .translationY(-tToolbar.getHeight())
+                .setInterpolator(new LinearInterpolator())
+                .setDuration(180)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        toolbarSetElevation(0);
+                    }
+                });
+    }
+
+
+}
