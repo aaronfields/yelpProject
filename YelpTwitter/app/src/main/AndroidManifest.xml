@@ -25,7 +25,8 @@
         </activity>
         <activity android:name=".TweetActivity">
         </activity>
-        <activity android:name=".CheeseActivity">
+        <activity android:name=".CheeseActivity"
+            android:parentActivityName=".MainActivity">
         </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -35,7 +36,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".LikesActivity">
+        <activity android:name=".LikesActivity"
+            android:parentActivityName=".CheeseActivity">
         </activity>
         <service android:name=".LocationService" />
 

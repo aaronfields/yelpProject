@@ -10,6 +10,7 @@ public class ResultsSingleton {
     private String userID;
     private double latitude;
     private double longitude;
+    private boolean isLoggedIn = false;
 
     private static ResultsSingleton resultsSingleton;
     private static ArrayList<Food> foodArrayList;
@@ -66,6 +67,14 @@ public class ResultsSingleton {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public boolean isLoggedIn() {
+        return isLoggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        isLoggedIn = loggedIn;
     }
 
 

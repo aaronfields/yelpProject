@@ -97,11 +97,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         parameters.put("limit", "20");
         //location = "Austin, tx";
 
-
-
-
-        Intent i = new Intent(this, LoginActivity.class);
-        startActivityForResult(i, 1);
+        //TODO: wrap in if statement
+        if(ResultsSingleton.getInstance().isLoggedIn()) {
+            Intent i = new Intent(this, LoginActivity.class);
+            startActivityForResult(i, 1);
+        }
 
         tToolbar = (Toolbar) findViewById(R.id.toolbar);
         revolver = 0;
@@ -363,6 +363,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
                 ResultsSingleton.getInstance().setUserName(username);
                 ResultsSingleton.getInstance().setUserID(twitterId);
+                ResultsSingleton.getInstance().setLoggedIn(true);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
