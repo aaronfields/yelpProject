@@ -95,15 +95,24 @@
             android:orientation="horizontal">
         <Button
             android:id="@+id/mapsButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
             android:text="MAP"
-            />
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="#FFFFFF"/>
             <Button
                 android:id="@+id/addButton"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="ADD"/>
+                android:layout_weight="1"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="10dp"
+                android:text="SAVE"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="@color/colorPrimary"/>
         </LinearLayout>
 
 
