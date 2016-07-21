@@ -186,6 +186,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 revolver = 0;
             }
 
+            foodList = new ArrayList<>();
+
             try {
                 for(int i = start; i < finish; i++) {
                     String id = ids[0].get(i);
