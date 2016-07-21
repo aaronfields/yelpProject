@@ -1,6 +1,7 @@
 package ly.generalassemb.yelptwitter;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -173,10 +175,14 @@ public class CheeseActivity extends AppCompatActivity {
             case R.id.action_map:
                 //TODO: Go to google maps with address
                 double mLatitude = ResultsSingleton.getInstance().getLatitude();
-                double mLongitude = ResultsSingleton.getInstance().getLatitude();
-                Intent mapIntent = new Intent(CheeseActivity.this, LikesActivity.class);
-                mapIntent.putExtra("latitude", mLatitude);
-                mapIntent.putExtra("longitude", mLongitude);
+                double mLongitude = ResultsSingleton.getInstance().getLongitude();
+//                Intent mapIntent = new Intent(CheeseActivity.this, LikesActivity.class);
+//                mapIntent.putExtra("latitude", mLatitude);
+//                mapIntent.putExtra("longitude", mLongitude);
+
+                String uri = String.format(Locale.ENGLISH, "geo:0,0?q=address", mLatitude, mLongitude);
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                CheeseActivity.this.startActivity(mapIntent);
                 break;
             case R.id.action_likes:
                 Intent intent = new Intent(CheeseActivity.this, LikesActivity.class);
