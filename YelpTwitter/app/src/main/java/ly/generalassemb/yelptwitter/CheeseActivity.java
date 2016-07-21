@@ -11,6 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -37,6 +39,8 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class CheeseActivity extends AppCompatActivity {
+    Button mapsButton;
+    Button addButton;
 
     YelpAPI yelpAPI;
     String businessId;
@@ -68,8 +72,13 @@ public class CheeseActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        mapsButton = (Button)findViewById(R.id.mapsButton);
+        addButton = (Button)findViewById(R.id.addButton);
+
         collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
+        collapsingToolbar.setTitle("");
 
         final SearchTimeline searchTimeline = new SearchTimeline.Builder()
                 .query(SEARCH_QUERY)
@@ -151,7 +160,22 @@ public class CheeseActivity extends AppCompatActivity {
                         .into(imageView);
             }
 
+            mapsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    goToMaps();
+                }
+            });
+
+            addButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    addToLikes();
+                }
+            });
+
         }
+
     }
 
     @Override
@@ -164,25 +188,14 @@ public class CheeseActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save:
-                //TODO: Save to Firebase
-                ResultsSingleton.getInstance().getUserName();
-                ResultsSingleton.getInstance().getUserID();
-                Toast.makeText(CheeseActivity.this, "Added!", Toast.LENGTH_SHORT).show();
+                addToLikes();
                 break;
             case R.id.action_menu:
                 //TODO: If there's a menu link, provide it
                 break;
             case R.id.action_map:
-                //TODO: Go to google maps with address
-                double mLatitude = ResultsSingleton.getInstance().getLatitude();
-                double mLongitude = ResultsSingleton.getInstance().getLongitude();
-//                Intent mapIntent = new Intent(CheeseActivity.this, LikesActivity.class);
-//                mapIntent.putExtra("latitude", mLatitude);
-//                mapIntent.putExtra("longitude", mLongitude);
+                goToMaps();
 
-                String uri = String.format(Locale.ENGLISH, "geo:0,0?q=address", mLatitude, mLongitude);
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                CheeseActivity.this.startActivity(mapIntent);
                 break;
             case R.id.action_likes:
                 Intent intent = new Intent(CheeseActivity.this, LikesActivity.class);
@@ -192,6 +205,28 @@ public class CheeseActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void goToMaps(){
+
+        double mLatitude = ResultsSingleton.getInstance().getLatitude();
+        double mLongitude = ResultsSingleton.getInstance().getLongitude();
+
+        String uri = String.format(Locale.ENGLISH, "geo:0,0?q=address", mLatitude, mLongitude);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        CheeseActivity.this.startActivity(mapIntent);
+
+    }
+
+    public void addToLikes(){
+        String userName = ResultsSingleton.getInstance().getUserName();
+        String userId = ResultsSingleton.getInstance().getUserID();
+        String businessName = businessForDisplay.getmName();
+        String businessId = this.businessId;
+        String businessUrl = imageURL;
+        Toast.makeText(CheeseActivity.this, "Added!", Toast.LENGTH_SHORT).show();
+        //TODO: Save to Firebase
+
     }
 }
 
