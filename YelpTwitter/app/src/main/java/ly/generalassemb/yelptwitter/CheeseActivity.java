@@ -19,6 +19,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.tweetui.SearchTimeline;
 import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
@@ -57,6 +59,9 @@ public class CheeseActivity extends AppCompatActivity {
 
     //public static final String EXTRA_NAME = "restaurant_name";
     private String SEARCH_QUERY;
+
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference userRef = database.getReference("users").child(ResultsSingleton.getInstance().getUserName());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -246,6 +251,9 @@ public class CheeseActivity extends AppCompatActivity {
         String businessUrl = imageURL;
         Toast.makeText(CheeseActivity.this, "Added!", Toast.LENGTH_SHORT).show();
         //TODO: Save to Firebase
+        Food likedObject = new Food(imageURL,businessName,businessId);
+        userRef.push().setValue(likedObject);
+
 
     }
 }
