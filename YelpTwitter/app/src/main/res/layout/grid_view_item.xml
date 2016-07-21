@@ -7,10 +7,6 @@
                 android:paddingTop="1dp"
                 android:paddingBottom="1dp">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 
     <ImageView
         android:layout_width="match_parent"
@@ -19,9 +15,6 @@
         android:id="@+id/imageView"
         android:src="@mipmap/ic_launcher"
         />
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+
 
 </RelativeLayout>

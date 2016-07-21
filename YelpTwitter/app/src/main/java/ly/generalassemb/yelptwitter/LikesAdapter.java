@@ -2,7 +2,6 @@ package ly.generalassemb.yelptwitter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,10 +81,9 @@ public class LikesAdapter extends RecyclerView.Adapter<LikesAdapter.likesViewHol
 
             Food food = foodList.get(position);
             Intent intent = new Intent(this.context, CheeseActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("name_id", food.getFoodId());
-            bundle.putString("image_url", food.getFoodPic());
-            intent.putExtras(bundle);
+
+            intent.putExtra("name_id", food.getFoodId());
+            intent.putExtra("image_url", food.getFoodPic());
             this.context.startActivity(intent);
             }
 
