@@ -58,7 +58,7 @@ public class LikesActivity extends AppCompatActivity {
                     String url = dataSnapshot.child("foodPic").getValue().toString();
                     String name = dataSnapshot.child("restaurantName").getValue().toString();
                     String id = dataSnapshot.child("foodId").getValue().toString();
-                    Food m = new Food(url, name, id);
+                    Food m = new Food(url,id, name);
                     fList.add(m);
                     i += 2;
                     Log.d("URL", "" + url);
