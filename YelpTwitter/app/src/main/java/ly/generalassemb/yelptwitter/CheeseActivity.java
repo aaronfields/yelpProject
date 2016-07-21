@@ -41,7 +41,8 @@ import retrofit2.Response;
 public class CheeseActivity extends AppCompatActivity {
     Button mapsButton;
     Button addButton;
-
+    TextView businessNameDisplay;
+    TextView businessAddressDisplay;
     YelpAPI yelpAPI;
     String businessId;
     String imageURL;
@@ -50,9 +51,12 @@ public class CheeseActivity extends AppCompatActivity {
     BusinessYelpApp businessForDisplay;
     CollapsingToolbarLayout collapsingToolbar;
     ArrayList<String> imageUrls;
+    private String hashtag;
+    private ListView listView;
+    private String hello;
 
-    public static final String EXTRA_NAME = "restaurant_name";
-    private static final String SEARCH_QUERY = "#truefoodkitchen";
+    //public static final String EXTRA_NAME = "restaurant_name";
+    private String SEARCH_QUERY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +76,11 @@ public class CheeseActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        businessNameDisplay = (TextView)findViewById(R.id.businessName);
+        businessAddressDisplay = (TextView)findViewById(R.id.businessAddress);
+        businessNameDisplay.setText("");
+        businessAddressDisplay.setText("");
+
         mapsButton = (Button)findViewById(R.id.mapsButton);
         addButton = (Button)findViewById(R.id.addButton);
 
@@ -80,19 +89,9 @@ public class CheeseActivity extends AppCompatActivity {
         collapsingToolbar.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
         collapsingToolbar.setTitle("");
 
-        final SearchTimeline searchTimeline = new SearchTimeline.Builder()
-                .query(SEARCH_QUERY)
-                .build();
-        final TweetTimelineListAdapter adapter = new TweetTimelineListAdapter.Builder(this)
-                .setTimeline(searchTimeline)
-                .build();
+        listView = (ListView) findViewById(R.id.twitter_list);
 
-        ListView listView = (ListView) findViewById(R.id.twitter_list);
 
-        listView.setAdapter(adapter);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            listView.setNestedScrollingEnabled(true);
-        }
 
     }
 
@@ -111,10 +110,10 @@ public class CheeseActivity extends AppCompatActivity {
 
             String address = "";
             for (int i = 0; i< response.body().location().displayAddress().size(); i++) {
-                address += response.body().location().displayAddress().get(i) +"\n";
+                address += response.body().location().displayAddress().get(i) +", ";
             }
 
-            address = address.substring(0, (address.length() - 1));
+            address = address.substring(0, (address.length() - 2));
             Log.d("SEARCH", "yelp: "+address);
             BusinessYelpApp business = new BusinessYelpApp(response.body().name(), response.body().ratingImgUrl(), address);
 
@@ -145,6 +144,8 @@ public class CheeseActivity extends AppCompatActivity {
 
             businessForDisplay = business;
             collapsingToolbar.setTitle(businessForDisplay.getmName());
+            businessNameDisplay.setText(businessForDisplay.getmName());
+            businessAddressDisplay.setText(businessForDisplay.getmAddress());
 
             LinearLayout layout = (LinearLayout) findViewById(R.id.linear);
             for (int i = 0; i < imageUrls.size(); i++) {
@@ -158,6 +159,25 @@ public class CheeseActivity extends AppCompatActivity {
                         .resize(height, height)
                         .centerCrop()
                         .into(imageView);
+            }
+
+            hashtag = businessForDisplay.getmName().toString()
+                    .replace(" ", "")
+                    .replace("!", "")
+                    .replace("$", "")
+                    .replace("&", "");
+            Log.d("HASHTAG", hashtag);
+
+            final SearchTimeline searchTimeline = new SearchTimeline.Builder()
+                    .query("#"+hashtag)
+                    .build();
+            final TweetTimelineListAdapter adapter = new TweetTimelineListAdapter.Builder(CheeseActivity.this)
+                    .setTimeline(searchTimeline)
+                    .build();
+
+            listView.setAdapter(adapter);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                listView.setNestedScrollingEnabled(true);
             }
 
             mapsButton.setOnClickListener(new View.OnClickListener() {
@@ -212,7 +232,7 @@ public class CheeseActivity extends AppCompatActivity {
         double mLatitude = ResultsSingleton.getInstance().getLatitude();
         double mLongitude = ResultsSingleton.getInstance().getLongitude();
 
-        String uri = String.format(Locale.ENGLISH, "geo:0,0?q=address", mLatitude, mLongitude);
+        String uri = String.format(Locale.ENGLISH, "geo:0,0?q="+businessForDisplay.getmAddress());
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
         CheeseActivity.this.startActivity(mapIntent);
 
