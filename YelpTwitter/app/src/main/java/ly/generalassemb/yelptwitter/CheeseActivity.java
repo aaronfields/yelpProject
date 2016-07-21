@@ -161,7 +161,11 @@ public class CheeseActivity extends AppCompatActivity {
                         .into(imageView);
             }
 
-            hashtag = businessForDisplay.getmName().toString().replace(" ", "").replace("'", "");
+            hashtag = businessForDisplay.getmName().toString()
+                    .replace(" ", "")
+                    .replace("!", "")
+                    .replace("$", "")
+                    .replace("&", "");
             Log.d("HASHTAG", hashtag);
 
             final SearchTimeline searchTimeline = new SearchTimeline.Builder()
