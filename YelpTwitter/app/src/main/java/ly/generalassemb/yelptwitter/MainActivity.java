@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},REQUEST_LOCATION);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION);
         }
         Intent getLocation = new Intent(MainActivity.this, LocationService.class);
         getLocation.putExtra("location", "location");
@@ -100,9 +100,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             public void onRefresh() {
 
                 new Handler().postDelayed(new Runnable() {
-                    @Override public void run() {
+                    @Override
+                    public void run() {
                         swipeLayout.setRefreshing(false);
-                        revolver ++;
+                        revolver++;
                         new DownloadUrlTask().execute(ids);
                     }
                 }, 7000);
@@ -153,17 +154,18 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             Log.d("SEARCH", "onCreate: You are not connected");
         }
     }
+
     private class DownloadUrlTask extends AsyncTask<ArrayList<String>, Void, Void> {
 
         @Override
         protected Void doInBackground(ArrayList<String>... ids) {
-            int start= 0;
-            int finish= 5;
-            if(revolver > 4){
+            int start = 0;
+            int finish = 5;
+            if (revolver > 4) {
                 revolver = 0;
             }
             getCoordinates();
-            if(mLatitude == ResultsSingleton.getInstance().getLatitude() && mLongitude == ResultsSingleton.getInstance().getLongitude()) {
+            if (mLatitude == ResultsSingleton.getInstance().getLatitude() && mLongitude == ResultsSingleton.getInstance().getLongitude()) {
                 switch (revolver) {
                     case 0:
                         start = 0;
@@ -182,14 +184,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                         finish = 20;
                         break;
                 }
-            }else {
+            } else {
                 revolver = 0;
             }
 
             foodList = new ArrayList<>();
 
             try {
-                for(int i = start; i < finish; i++) {
+                for (int i = start; i < finish; i++) {
                     String id = ids[0].get(i);
                     Document doc = Jsoup.connect("http://www.yelp.com/biz_photos/" + id + "?tab=food").get();
 
@@ -198,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     Pattern p = Pattern.compile("(?is)\"src_high_res\": \"(.+?)\"");
                     Matcher m = p.matcher(all.toString());
 
-                    Call <Business> call2 = yelpAPI.getBusiness(id);
+                    Call<Business> call2 = yelpAPI.getBusiness(id);
                     Response<Business> response2 = null;
                     try {
                         response2 = call2.execute();
@@ -206,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                         e.printStackTrace();
                     }
 
-                    Log.d("SEARCH", "yelp: "+response2.body());
+                    Log.d("SEARCH", "yelp: " + response2.body());
 
                     String restaurantName = "";
 
@@ -229,16 +231,15 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         }
 
 
-
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             Collections.shuffle(foodList);
             ResultsSingleton.getInstance().setFoodArrayList(foodList);
-            mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+            mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
             mLayoutManager = new GridLayoutManager(MainActivity.this, 3);
             mRecyclerView.setLayoutManager(mLayoutManager);
-            mAdapter = new PhotoGridAdapter(foodList,MainActivity.this);
+            mAdapter = new PhotoGridAdapter(foodList, MainActivity.this);
             mRecyclerView.setAdapter(mAdapter);
 
             // We need to detect scrolling changes in the RecyclerView
@@ -268,7 +269,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                         }
                     }
                 }
-
 
 
                 @Override
@@ -316,10 +316,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 e.printStackTrace();
             }
 
-            Log.d("SEARCH", "yelp: "+response.body().businesses().size());
+            Log.d("SEARCH", "yelp: " + response.body().businesses().size());
             ArrayList<String> businessId = new ArrayList<>();
 
-            for(int i = 0; i<response.body().businesses().size(); i++){
+            for (int i = 0; i < response.body().businesses().size(); i++) {
                 String id = response.body().businesses().get(i).id();
                 businessId.add(id);
             }
@@ -332,7 +332,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             super.onPostExecute(ids);
             MainActivity.this.ids = ids;
             new DownloadUrlTask().execute(ids);
-
 
 
         }
@@ -376,9 +375,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 1) {
-            if(resultCode == Activity.RESULT_OK){
-                String username=data.getStringExtra("username");
-                String twitterId=data.getStringExtra("twitterId");
+            if (resultCode == Activity.RESULT_OK) {
+                String username = data.getStringExtra("username");
+                String twitterId = data.getStringExtra("twitterId");
 
                 ResultsSingleton.getInstance().setUserName(username);
                 ResultsSingleton.getInstance().setUserID(twitterId);
@@ -389,13 +388,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         }
     }
 
-    public void getCoordinates(){
-        mLatitude=ResultsSingleton.getInstance().getLatitude();
+    public void getCoordinates() {
+        mLatitude = ResultsSingleton.getInstance().getLatitude();
         mLongitude = ResultsSingleton.getInstance().getLongitude();
-        Log.d("GOTEM","lat= "+ mLatitude+" long= "+mLongitude);
+        Log.d("GOTEM", "lat= " + mLatitude + " long= " + mLongitude);
         coordinate = CoordinateOptions.builder()
-                .latitude(37.7577)
-                .longitude(-122.4376).build();
+                .latitude(mLatitude)
+                .longitude(mLongitude).build();
 
         mLatitude = coordinate.latitude();
         mLongitude = coordinate.longitude();
@@ -403,17 +402,18 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
 
-    public void setCoordinates(){
+    public void setCoordinates() {
         ResultsSingleton.getInstance().setLatitude(mLatitude);
         ResultsSingleton.getInstance().setLongitude(mLongitude);
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
             case REQUEST_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
 
