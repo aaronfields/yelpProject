@@ -22,6 +22,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.myVi
     LayoutInflater inflater;
     List<Food> foodList;
     Context context;
+    int width;
 
     public PhotoGridAdapter(List<Food> list, Context context) {
         this.foodList = list;
@@ -39,13 +40,10 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.myVi
     @Override
     public void onBindViewHolder(myViewHolder holder, int position) {
 
-        //TODO: setup layout and figure out how we want to display our images
 
-        //Place holder image for testing
 
-//        holder.mImage.setImageResource(R.mipmap.ic_launcher);
-//        holder.mName.setText(foodList.get(position).getFoodPic());
-        holder.putThePhoto(foodList.get(position).getFoodPic());
+        width = holder.root.getMeasuredWidth();
+        holder.putThePhoto(foodList.get(position).getFoodPic(), width);
 
 
 
@@ -65,21 +63,28 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.myVi
         public TextView mName;
         List<Food> foodList = new ArrayList<>();
         Context context;
+        public View root;
+
 
         public myViewHolder(View itemView, Context context, List<Food> food) {
             super(itemView);
             this.foodList = food;
             this.context = context;
+            root = itemView;
 
             itemView.setOnClickListener(this);
             mImage = (ImageView) itemView.findViewById(R.id.imageView);
-           // mName = (TextView) itemView.findViewById(R.id.textView);
+
+
 
         }
 
-        public void putThePhoto(String url){
+        public void putThePhoto(String url, int width){
+            width = mImage.getMeasuredWidth();
             Picasso.with(itemView.getContext())
                     .load(url)
+                    //.resize(width, width)
+                   // .centerCrop()
                     .into(mImage);
         }
 

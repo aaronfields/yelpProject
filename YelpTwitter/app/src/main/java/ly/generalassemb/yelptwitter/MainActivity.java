@@ -93,11 +93,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         yelpAPI = apiFactory.createAPI();
 
         parameters = new HashMap<>();
-
-// general params
         parameters.put("term", "food");
         parameters.put("limit", "20");
-        location = "Austin, tx";
+        //location = "Austin, tx";
 
 
 
