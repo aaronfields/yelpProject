@@ -3,10 +3,8 @@ package ly.generalassemb.yelptwitter;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -86,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},REQUEST_LOCATION);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION);
         }
 
         YelpAPIFactory apiFactory = new YelpAPIFactory(consumerKey, consumerSecret, token, tokenSecret);
@@ -139,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         if(isConnected) {
             getLocation();
         }
+
 
 
     }
@@ -211,7 +210,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             }
             return null;
         }
-
 
 
         @Override
@@ -318,7 +316,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             new DownloadUrlTask().execute(ids);
 
 
-
         }
     }
 
@@ -373,10 +370,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         }
     }
 
-    public void getCoordinates(){
-        mLatitude=ResultsSingleton.getInstance().getLatitude();
+    public void getCoordinates() {
+        mLatitude = ResultsSingleton.getInstance().getLatitude();
         mLongitude = ResultsSingleton.getInstance().getLongitude();
-        Log.d("GOTEM","lat= "+ mLatitude+" long= "+mLongitude);
+        Log.d("GOTEM", "lat= " + mLatitude + " long= " + mLongitude);
         coordinate = CoordinateOptions.builder()
                 .latitude(mLatitude)
                 .longitude(mLongitude).build();
@@ -391,7 +388,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         switch (requestCode) {
             case REQUEST_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
 

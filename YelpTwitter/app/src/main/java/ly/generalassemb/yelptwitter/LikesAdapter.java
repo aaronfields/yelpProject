@@ -24,7 +24,6 @@ public class LikesAdapter extends RecyclerView.Adapter<LikesAdapter.likesViewHol
     LayoutInflater inflater;
     List<Food> foodList;
     Context context;
-    Random random = new Random();
     public LikesAdapter(List<Food> list, Context context) {
         this.foodList = list;
         this.context = context;
@@ -46,7 +45,6 @@ public class LikesAdapter extends RecyclerView.Adapter<LikesAdapter.likesViewHol
         Picasso.with(this.context)
                 .load(imgURL)
                 .into(holder.mImage);
-       // holder.mImage.setImageResource(R.mipmap.ic_launcher);
         holder.mName.setText(foodList.get(position).getRestaurantName());
     }
 
@@ -81,16 +79,6 @@ public class LikesAdapter extends RecyclerView.Adapter<LikesAdapter.likesViewHol
         public void onClick(View view) {
             int position = getAdapterPosition();
             // TODO: set up detail activity to hande clicks
-
-
-  /*         Shoes shoe = this.shoeList.get(position);
-           Intent intent = new Intent(this.context, ShoeDetail.class);
-           intent.putExtra("shoe_id", shoe.getSHOE_ID());
-           intent.putExtra("img_id", shoe.getSHOE_IMAGE());
-           intent.putExtra("name", shoe.getSHOE_NAME());
-           intent.putExtra("price", shoe.getSHOE_PRICE());
-           intent.putExtra("description", shoe.getSHOE_DESCRIPTION());
-           this.context.startActivity(intent);*/
 
 
         }
