@@ -41,7 +41,8 @@ import retrofit2.Response;
 public class CheeseActivity extends AppCompatActivity {
     Button mapsButton;
     Button addButton;
-
+    TextView businessNameDisplay;
+    TextView businessAddressDisplay;
     YelpAPI yelpAPI;
     String businessId;
     String imageURL;
@@ -71,6 +72,11 @@ public class CheeseActivity extends AppCompatActivity {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        businessNameDisplay = (TextView)findViewById(R.id.businessName);
+        businessAddressDisplay = (TextView)findViewById(R.id.businessAddress);
+        businessNameDisplay.setText("");
+        businessAddressDisplay.setText("");
 
         mapsButton = (Button)findViewById(R.id.mapsButton);
         addButton = (Button)findViewById(R.id.addButton);
@@ -111,10 +117,10 @@ public class CheeseActivity extends AppCompatActivity {
 
             String address = "";
             for (int i = 0; i< response.body().location().displayAddress().size(); i++) {
-                address += response.body().location().displayAddress().get(i) +"\n";
+                address += response.body().location().displayAddress().get(i) +", ";
             }
 
-            address = address.substring(0, (address.length() - 1));
+            address = address.substring(0, (address.length() - 2));
             Log.d("SEARCH", "yelp: "+address);
             BusinessYelpApp business = new BusinessYelpApp(response.body().name(), response.body().ratingImgUrl(), address);
 
@@ -145,6 +151,8 @@ public class CheeseActivity extends AppCompatActivity {
 
             businessForDisplay = business;
             collapsingToolbar.setTitle(businessForDisplay.getmName());
+            businessNameDisplay.setText(businessForDisplay.getmName());
+            businessAddressDisplay.setText(businessForDisplay.getmAddress());
 
             LinearLayout layout = (LinearLayout) findViewById(R.id.linear);
             for (int i = 0; i < imageUrls.size(); i++) {
