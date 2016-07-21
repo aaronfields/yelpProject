@@ -2,7 +2,6 @@ package ly.generalassemb.yelptwitter;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -366,7 +365,7 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    //@TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void toolbarSetElevation(float elevation) {
         // setElevation() only works on Lollipop
         if (android.os.Build.VERSION.SDK_INT == Build.VERSION_CODES.LOLLIPOP) {
