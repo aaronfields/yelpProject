@@ -3,8 +3,10 @@ package ly.generalassemb.yelptwitter;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -67,12 +69,17 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     ArrayList<String> ids;
     private static final int TOOLBAR_ELEVATION = 4;
     static final int REQUEST_LOCATION = 0;
+    boolean isConnected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("coordinatesLoaded");
 
+
+        checkConnection();
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED &&
@@ -81,9 +88,18 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
             ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},REQUEST_LOCATION);
         }
-        Intent getLocation = new Intent(MainActivity.this, LocationService.class);
-        getLocation.putExtra("location", "location");
-        startService(getLocation);
+
+        YelpAPIFactory apiFactory = new YelpAPIFactory(consumerKey, consumerSecret, token, tokenSecret);
+        yelpAPI = apiFactory.createAPI();
+
+        parameters = new HashMap<>();
+
+// general params
+        parameters.put("term", "food");
+        parameters.put("limit", "20");
+        location = "Austin, tx";
+
+
 
 
         Intent i = new Intent(this, LoginActivity.class);
@@ -102,8 +118,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 new Handler().postDelayed(new Runnable() {
                     @Override public void run() {
                         swipeLayout.setRefreshing(false);
-                        revolver ++;
-                        new DownloadUrlTask().execute(ids);
+                        //revolver ++;
+                        if(isConnected) {
+                            getLocation();
+                        }
                     }
                 }, 7000);
             }
@@ -116,42 +134,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         foodList = new ArrayList<>();
 
-        YelpAPIFactory apiFactory = new YelpAPIFactory(consumerKey, consumerSecret, token, tokenSecret);
-        yelpAPI = apiFactory.createAPI();
+        registerReceiver(mReceiver,filter);
 
-        parameters = new HashMap<>();
-
-// general params
-        parameters.put("term", "food");
-        parameters.put("limit", "20");
-        location = "Austin, tx";
-
-
-// locale params
-        //params.put("lang", "fr");
-//
-        getCoordinates();
-        setCoordinates();
-
-
-//        bounds = BoundingBoxOptions.builder()
-//                .swLatitude(37.7)
-//                .swLongitude(-122.4376)
-//                .neLatitude(37.785381)
-//                .neLongitude(-122.331681).build();
-
-        call = yelpAPI.search(coordinate, parameters);
-
-        //new DownloadUrlTask().execute();
-
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            Log.d("SEARCH", "onCreate: You are connected");
-            new SearchBusinessesTask().execute();
-        } else {
-            Log.d("SEARCH", "onCreate: You are not connected");
+        if(isConnected) {
+            getLocation();
         }
+
+
     }
     private class DownloadUrlTask extends AsyncTask<ArrayList<String>, Void, Void> {
 
@@ -162,8 +151,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             if(revolver > 4){
                 revolver = 0;
             }
-            getCoordinates();
-            if(mLatitude == ResultsSingleton.getInstance().getLatitude() && mLongitude == ResultsSingleton.getInstance().getLongitude()) {
                 switch (revolver) {
                     case 0:
                         start = 0;
@@ -182,9 +169,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                         finish = 20;
                         break;
                 }
-            }else {
-                revolver = 0;
-            }
 
             foodList = new ArrayList<>();
 
@@ -316,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 e.printStackTrace();
             }
 
-            Log.d("SEARCH", "yelp: "+response.body().businesses().size());
+           // Log.d("SEARCH", "yelp: "+response.body().businesses().size());
             ArrayList<String> businessId = new ArrayList<>();
 
             for(int i = 0; i<response.body().businesses().size(); i++){
@@ -394,19 +378,13 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         mLongitude = ResultsSingleton.getInstance().getLongitude();
         Log.d("GOTEM","lat= "+ mLatitude+" long= "+mLongitude);
         coordinate = CoordinateOptions.builder()
-                .latitude(37.7577)
-                .longitude(-122.4376).build();
+                .latitude(mLatitude)
+                .longitude(mLongitude).build();
 
-        mLatitude = coordinate.latitude();
-        mLongitude = coordinate.longitude();
+
 
     }
 
-
-    public void setCoordinates(){
-        ResultsSingleton.getInstance().setLatitude(mLatitude);
-        ResultsSingleton.getInstance().setLongitude(mLongitude);
-    }
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -431,6 +409,42 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     }
 
 
+    BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            getCoordinates();
+            call = yelpAPI.search(coordinate, parameters);
+            if(isConnected) {
+                new SearchBusinessesTask().execute();
+            }
+        }
+    };
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
+    }
+
+    public void checkConnection(){
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            Log.d("SEARCH", "onCreate: You are connected");
+            isConnected = true;
+
+        } else {
+            Log.d("SEARCH", "onCreate: You are not connected");
+            isConnected = false;
+        }
+    }
+
+    public void getLocation(){
+        Intent getLocation = new Intent(MainActivity.this, LocationService.class);
+        getLocation.putExtra("location", "location");
+        startService(getLocation);
+    }
 }
 
 

@@ -53,6 +53,9 @@ public class LocationService extends Service implements GoogleApiClient.OnConnec
     public void onDestroy() {
         super.onDestroy();
         mGoogleApiClient.disconnect();
+        Intent intent = new Intent();
+        intent.setAction("coordinatesLoaded");
+        sendBroadcast(intent);
         Log.d("STOP", "Service stopped");
     }
 
@@ -70,8 +73,8 @@ public class LocationService extends Service implements GoogleApiClient.OnConnec
         mLastLocation = getLocation(mGoogleApiClient);
 
 
-        Log.d("SERVICECORDS", mLastLocation.getLatitude() + " " + mLastLocation.getLongitude());
-        Log.d("CORDS", mLastLocation + "");
+       // Log.d("SERVICECORDS", mLastLocation.getLatitude() + " " + mLastLocation.getLongitude());
+      //  Log.d("CORDS", mLastLocation + "");
 
 
         stopSelf();
@@ -101,6 +104,7 @@ public class LocationService extends Service implements GoogleApiClient.OnConnec
             Log.d("cords", "lat = " + lat + " long = " + longitude);
 
         }
+
 
 
         return location;
