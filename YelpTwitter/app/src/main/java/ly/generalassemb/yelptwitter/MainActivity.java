@@ -5,12 +5,14 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -41,7 +43,7 @@ import java.util.regex.Pattern;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
     Toolbar tToolbar;
     PhotoGridAdapter mAdapter;
@@ -64,11 +66,25 @@ public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeLayout;
     ArrayList<String> ids;
     private static final int TOOLBAR_ELEVATION = 4;
+    static final int REQUEST_LOCATION = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},REQUEST_LOCATION);
+        }
+        Intent getLocation = new Intent(MainActivity.this, LocationService.class);
+        getLocation.putExtra("location", "location");
+        startService(getLocation);
+
 
         Intent i = new Intent(this, LoginActivity.class);
         startActivityForResult(i, 1);
@@ -372,6 +388,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getCoordinates(){
+        mLatitude=ResultsSingleton.getInstance().getLatitude();
+        mLongitude = ResultsSingleton.getInstance().getLongitude();
+        Log.d("GOTEM","lat= "+ mLatitude+" long= "+mLongitude);
         coordinate = CoordinateOptions.builder()
                 .latitude(37.7577)
                 .longitude(-122.4376).build();
@@ -385,6 +404,28 @@ public class MainActivity extends AppCompatActivity {
     public void setCoordinates(){
         ResultsSingleton.getInstance().setLatitude(mLatitude);
         ResultsSingleton.getInstance().setLongitude(mLongitude);
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
 

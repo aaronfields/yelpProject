@@ -47,7 +47,7 @@ public class LikesAdapter extends RecyclerView.Adapter<LikesAdapter.likesViewHol
                 .load(imgURL)
                 .into(holder.mImage);
        // holder.mImage.setImageResource(R.mipmap.ic_launcher);
-        holder.mName.setText(foodList.get(position).getFoodPic());
+        holder.mName.setText(foodList.get(position).getRestaurantName());
     }
 
 
