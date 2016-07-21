@@ -53,6 +53,7 @@ public class CheeseActivity extends AppCompatActivity {
     ArrayList<String> imageUrls;
     private String hashtag;
     private ListView listView;
+    private String hello;
 
     //public static final String EXTRA_NAME = "restaurant_name";
     private String SEARCH_QUERY;
