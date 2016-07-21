@@ -381,6 +381,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     public void setCoordinates(){
         ResultsSingleton.getInstance().setLatitude(mLatitude);
         ResultsSingleton.getInstance().setLongitude(mLongitude);
@@ -388,3 +389,5 @@ public class MainActivity extends AppCompatActivity {
 
 
 }
+
+
