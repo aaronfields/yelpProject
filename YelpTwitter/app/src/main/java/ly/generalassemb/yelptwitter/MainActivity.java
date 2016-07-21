@@ -58,7 +58,11 @@ public class MainActivity extends AppCompatActivity {
     CoordinateOptions coordinate;
     BoundingBoxOptions bounds;
     String location;
+    int revolver;
+    double mLatitude;
+    double mLongitude;
     SwipeRefreshLayout swipeLayout;
+    ArrayList<String> ids;
     private static final int TOOLBAR_ELEVATION = 4;
 
     @Override
@@ -70,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(i, 1);
 
         tToolbar = (Toolbar) findViewById(R.id.toolbar);
+        revolver = 0;
+
+        ids = new ArrayList<>();
 
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -79,8 +86,10 @@ public class MainActivity extends AppCompatActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override public void run() {
                         swipeLayout.setRefreshing(false);
+                        revolver ++;
+                        new DownloadUrlTask().execute(ids);
                     }
-                }, 5000);
+                }, 7000);
             }
         });
         swipeLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -105,15 +114,9 @@ public class MainActivity extends AppCompatActivity {
 // locale params
         //params.put("lang", "fr");
 //
-        coordinate = CoordinateOptions.builder()
-                .latitude(37.7577)
-                .longitude(-122.4376).build();
+        getCoordinates();
+        setCoordinates();
 
-        double mLatitude = coordinate.latitude();
-        double mLongitude = coordinate.longitude();
-
-        ResultsSingleton.getInstance().setLatitude(mLatitude);
-        ResultsSingleton.getInstance().setLongitude(mLongitude);
 
 //        bounds = BoundingBoxOptions.builder()
 //                .swLatitude(37.7)
@@ -133,24 +136,43 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.d("SEARCH", "onCreate: You are not connected");
         }
-
-
-        //Collections.shuffle(List)
-
-
     }
-
-
-
-
     private class DownloadUrlTask extends AsyncTask<ArrayList<String>, Void, Void> {
 
         @Override
         protected Void doInBackground(ArrayList<String>... ids) {
+            int start= 0;
+            int finish= 5;
+            if(revolver > 4){
+                revolver = 0;
+            }
+            getCoordinates();
+            if(mLatitude == ResultsSingleton.getInstance().getLatitude() && mLongitude == ResultsSingleton.getInstance().getLongitude()) {
+                switch (revolver) {
+                    case 0:
+                        start = 0;
+                        finish = 5;
+                        break;
+                    case 1:
+                        start = 5;
+                        finish = 10;
+                        break;
+                    case 2:
+                        start = 10;
+                        finish = 15;
+                        break;
+                    case 3:
+                        start = 15;
+                        finish = 20;
+                        break;
+                }
+            }else {
+                revolver = 0;
+            }
 
             try {
-                for(String id:ids[0]) {
-//
+                for(int i = start; i < finish; i++) {
+                    String id = ids[0].get(i);
                     Document doc = Jsoup.connect("http://www.yelp.com/biz_photos/" + id + "?tab=food").get();
 
                     Elements all = doc.getAllElements();
@@ -172,12 +194,12 @@ public class MainActivity extends AppCompatActivity {
 
                     restaurantName = response2.body().name();
 
-                    int i = 0;
-                    while (m.find() && (i < 16)) {
+                    int i2 = 0;
+                    while (m.find() && (i2 < 16)) {
                         Food itemUrl = new Food("http:" + m.group(1), id, restaurantName);
                         //Log.d(TAG, "doInBackground: "+itemUrl);
                         foodList.add(itemUrl);
-                        i++;
+                        i2++;
                     }
                 }
 
@@ -228,6 +250,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 }
+
+
 
                 @Override
                 public final void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -288,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<String> ids) {
             super.onPostExecute(ids);
-
+            MainActivity.this.ids = ids;
             new DownloadUrlTask().execute(ids);
 
 
@@ -345,7 +369,25 @@ public class MainActivity extends AppCompatActivity {
                 //Write your code if there's no result
             }
         }
-    }//onActivityResult
+    }
+
+    public void getCoordinates(){
+        coordinate = CoordinateOptions.builder()
+                .latitude(37.7577)
+                .longitude(-122.4376).build();
+
+        mLatitude = coordinate.latitude();
+        mLongitude = coordinate.longitude();
+
+    }
+
+
+    public void setCoordinates(){
+        ResultsSingleton.getInstance().setLatitude(mLatitude);
+        ResultsSingleton.getInstance().setLongitude(mLongitude);
+    }
 
 
 }
+
+
