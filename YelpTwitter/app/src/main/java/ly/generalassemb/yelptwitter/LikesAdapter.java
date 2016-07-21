@@ -1,6 +1,8 @@
 package ly.generalassemb.yelptwitter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +13,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by brendan on 7/19/16.
@@ -80,9 +80,16 @@ public class LikesAdapter extends RecyclerView.Adapter<LikesAdapter.likesViewHol
             int position = getAdapterPosition();
             // TODO: set up detail activity to hande clicks
 
+            Food food = ResultsSingleton.getInstance().getFoodAtPosition(position);
+            Intent intent = new Intent(this.context, CheeseActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("rest_name", food.getRestaurantName());
+            bundle.putString("image_url", food.getFoodPic());
+            intent.putExtras(bundle);
+            this.context.startActivity(intent);
+            }
 
         }
     }
 
 
-}

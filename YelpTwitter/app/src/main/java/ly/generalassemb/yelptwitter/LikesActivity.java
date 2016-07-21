@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Button;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -101,6 +100,7 @@ public class LikesActivity extends AppCompatActivity {
         userRef.addChildEventListener(listener);
 
 
+
 //        mSubmit.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -115,6 +115,7 @@ public class LikesActivity extends AppCompatActivity {
 //
 //            }
 //        });
+
     }
 
 

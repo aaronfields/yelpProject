@@ -212,16 +212,15 @@ public class CheeseActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_save:
-                addToLikes();
-                break;
-            case R.id.action_menu:
-                //TODO: If there's a menu link, provide it
-                break;
-            case R.id.action_map:
-                goToMaps();
-
-                break;
+//            case R.id.action_save:
+//                addToLikes();
+//                break;
+//            case R.id.action_menu:
+//                //TODO: If there's a menu link, provide it
+//                break;
+//            case R.id.action_map:
+//                goToMaps();
+//                break;
             case R.id.action_likes:
                 Intent intent = new Intent(CheeseActivity.this, LikesActivity.class);
                 startActivity(intent);
