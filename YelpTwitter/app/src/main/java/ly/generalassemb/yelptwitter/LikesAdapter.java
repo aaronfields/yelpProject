@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ import java.util.List;
  */
 public class LikesAdapter extends RecyclerView.Adapter<LikesAdapter.likesViewHolder> {
 
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference userRef = database.getReference("users").child(ResultsSingleton.getInstance().getUserName());
 
     LayoutInflater inflater;
     List<Food> foodList;
@@ -55,7 +59,7 @@ public class LikesAdapter extends RecyclerView.Adapter<LikesAdapter.likesViewHol
 
     // setting the ViewHolder for my recyclerview with a clickListener
 
-    public class likesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class likesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         public ImageView mImage;
         public TextView mName;
@@ -77,18 +81,26 @@ public class LikesAdapter extends RecyclerView.Adapter<LikesAdapter.likesViewHol
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
-            // TODO: set up detail activity to hande clicks
 
             Food food = foodList.get(position);
             Intent intent = new Intent(this.context, CheeseActivity.class);
-
-
             intent.putExtra("name_id", food.getFoodId());
             intent.putExtra("image_url", food.getFoodPic());
             this.context.startActivity(intent);
             }
 
+        @Override
+        public boolean onLongClick(View view) {
+            int position = getAdapterPosition();
+            // TODO: set up removal on clicks
+
+            Food food = foodList.get(position);
+            //userRef.get
+
+
+            return false;
         }
+    }
     }
 
 
