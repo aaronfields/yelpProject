@@ -51,9 +51,11 @@ public class CheeseActivity extends AppCompatActivity {
     BusinessYelpApp businessForDisplay;
     CollapsingToolbarLayout collapsingToolbar;
     ArrayList<String> imageUrls;
+    private String hashtag;
+    private ListView listView;
 
-    public static final String EXTRA_NAME = "restaurant_name";
-    private static final String SEARCH_QUERY = "#truefoodkitchen";
+    //public static final String EXTRA_NAME = "restaurant_name";
+    private String SEARCH_QUERY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,19 +88,9 @@ public class CheeseActivity extends AppCompatActivity {
         collapsingToolbar.setExpandedTitleTextAppearance(R.style.ExpandedAppBar);
         collapsingToolbar.setTitle("");
 
-        final SearchTimeline searchTimeline = new SearchTimeline.Builder()
-                .query(SEARCH_QUERY)
-                .build();
-        final TweetTimelineListAdapter adapter = new TweetTimelineListAdapter.Builder(this)
-                .setTimeline(searchTimeline)
-                .build();
+        listView = (ListView) findViewById(R.id.twitter_list);
 
-        ListView listView = (ListView) findViewById(R.id.twitter_list);
 
-        listView.setAdapter(adapter);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            listView.setNestedScrollingEnabled(true);
-        }
 
     }
 
@@ -166,6 +158,21 @@ public class CheeseActivity extends AppCompatActivity {
                         .resize(height, height)
                         .centerCrop()
                         .into(imageView);
+            }
+
+            hashtag = businessForDisplay.getmName().toString().replace(" ", "").replace("'", "");
+            Log.d("HASHTAG", hashtag);
+
+            final SearchTimeline searchTimeline = new SearchTimeline.Builder()
+                    .query("#"+hashtag)
+                    .build();
+            final TweetTimelineListAdapter adapter = new TweetTimelineListAdapter.Builder(CheeseActivity.this)
+                    .setTimeline(searchTimeline)
+                    .build();
+
+            listView.setAdapter(adapter);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                listView.setNestedScrollingEnabled(true);
             }
 
             mapsButton.setOnClickListener(new View.OnClickListener() {
