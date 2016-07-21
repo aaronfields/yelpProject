@@ -14,9 +14,10 @@ public class Food {
     }
 
     public Food(String foodPic, String foodId, String restaurantName) {
-        this.foodId = foodId;
         this.foodPic = foodPic;
         this.restaurantName = restaurantName;
+        this.foodId = foodId;
+
     }
 
     public String getFoodPic() {

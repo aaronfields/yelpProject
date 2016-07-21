@@ -251,7 +251,7 @@ public class CheeseActivity extends AppCompatActivity {
         String businessUrl = imageURL;
         Toast.makeText(CheeseActivity.this, "Added!", Toast.LENGTH_SHORT).show();
         //TODO: Save to Firebase
-        Food likedObject = new Food(imageURL,businessName,businessId);
+        Food likedObject = new Food(imageURL,businessId,businessName);
         userRef.push().setValue(likedObject);
 
 
