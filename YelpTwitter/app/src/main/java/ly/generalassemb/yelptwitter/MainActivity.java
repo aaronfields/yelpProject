@@ -251,6 +251,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
+
+
                 @Override
                 public final void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     verticalOffset += dy;
