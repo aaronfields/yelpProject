@@ -212,7 +212,7 @@ public class CheeseActivity extends AppCompatActivity {
         double mLatitude = ResultsSingleton.getInstance().getLatitude();
         double mLongitude = ResultsSingleton.getInstance().getLongitude();
 
-        String uri = String.format(Locale.ENGLISH, "geo:0,0?q=address", mLatitude, mLongitude);
+        String uri = String.format(Locale.ENGLISH, "geo:0,0?q="+businessForDisplay.getmAddress());
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
         CheeseActivity.this.startActivity(mapIntent);
 
