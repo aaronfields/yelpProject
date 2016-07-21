@@ -80,10 +80,10 @@ public class LikesAdapter extends RecyclerView.Adapter<LikesAdapter.likesViewHol
             int position = getAdapterPosition();
             // TODO: set up detail activity to hande clicks
 
-            Food food = ResultsSingleton.getInstance().getFoodAtPosition(position);
+            Food food = foodList.get(position);
             Intent intent = new Intent(this.context, CheeseActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putString("rest_name", food.getRestaurantName());
+            bundle.putString("name_id", food.getFoodId());
             bundle.putString("image_url", food.getFoodPic());
             intent.putExtras(bundle);
             this.context.startActivity(intent);
