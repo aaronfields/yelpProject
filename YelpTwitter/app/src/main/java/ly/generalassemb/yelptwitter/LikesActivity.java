@@ -24,28 +24,26 @@ public class LikesActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
     List<Food> foodList;
-    Button mSubmit;
 
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference userRef = database.getReference("users").child("username2");
+
+
+    //TODO plug in user name into child and retrive user likes and display them
+    DatabaseReference userRef = database.getReference("users").child(ResultsSingleton.getInstance().getUserName());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        foodList = new ArrayList<>();
-//        mSubmit = (Button) findViewById(R.id.submit_button);
-        for (int i = 0; i < 21; i++) {
-            Food item = new Food(i + "", "", "");
-            foodList.add(item);
-        }
+
+        Log.d("LIKES","Likes started!");
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new LikesAdapter(foodList, LikesActivity.this);
-        mRecyclerView.setAdapter(mAdapter);
+       // mAdapter = new LikesAdapter(foodList, LikesActivity.this);
+      //  mRecyclerView.setAdapter(mAdapter);
 
         final List<Food> fList = new ArrayList<>();
         ChildEventListener listener = new ChildEventListener() {
@@ -54,8 +52,8 @@ public class LikesActivity extends AppCompatActivity {
                 Log.d("ADDED", "something was added:" + dataSnapshot.getKey());
 
 
-                // This iterates through the different children of the given user and retrives
-                // the vaules for my Food Class
+                // This iterates through the different children of the given user and retrieves
+                // the values for the current Users likes
 
                 for (int i = 0; i < dataSnapshot.getChildrenCount(); i++) {
                     String url = dataSnapshot.child("foodPic").getValue().toString();
@@ -64,6 +62,12 @@ public class LikesActivity extends AppCompatActivity {
                     Food m = new Food(url, name, id);
                     fList.add(m);
                     i += 2;
+                    Log.d("URL", "" + url);
+                    Log.d("NAME", "" + name);
+                    Log.d("ID", "" + id);
+
+
+
                     Log.d("Food", "" + fList.size());
                     mAdapter = new LikesAdapter(fList, LikesActivity.this);
                     mRecyclerView.setAdapter(mAdapter);

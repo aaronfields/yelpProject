@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,16 +42,12 @@ public class LikesAdapter extends RecyclerView.Adapter<LikesAdapter.likesViewHol
     public void onBindViewHolder(likesViewHolder holder, int position) {
 
         //TODO: setup layout and figure out how we want to display our images
-
-        //Place holder image for testing
-        holder.mImage.setImageResource(R.mipmap.ic_launcher);
+        String imgURL = foodList.get(position).getFoodPic();
+        Picasso.with(this.context)
+                .load(imgURL)
+                .into(holder.mImage);
+       // holder.mImage.setImageResource(R.mipmap.ic_launcher);
         holder.mName.setText(foodList.get(position).getFoodPic());
-       /*     String imgURL = foodList.get(position).getFoodPic();
-       Picasso.with(this.context)
-               .load(imgURL)
-               .into(holder.mImage);​*//*​
-
-*/
     }
 
 

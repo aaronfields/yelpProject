@@ -6,12 +6,18 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,7 +25,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.animation.LinearInterpolator;
+import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.yelp.clientlib.connection.YelpAPI;
 import com.yelp.clientlib.connection.YelpAPIFactory;
 import com.yelp.clientlib.entities.Business;
@@ -42,7 +52,10 @@ import java.util.regex.Pattern;
 import retrofit2.Call;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements
+        GoogleApiClient.OnConnectionFailedListener,
+        GoogleApiClient.ConnectionCallbacks {
+
 
     Toolbar tToolbar;
     PhotoGridAdapter mAdapter;
@@ -62,13 +75,31 @@ public class MainActivity extends AppCompatActivity {
     SwipeRefreshLayout swipeLayout;
     private static final int TOOLBAR_ELEVATION = 4;
 
+
+    GoogleApiClient mGoogleApiClient;
+    Location mLastLocation;
+    double lat, longitude;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Check to see if we have permission for location
+
+
+
+
         Intent i = new Intent(this, LoginActivity.class);
         startActivityForResult(i, 1);
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
 
         tToolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -78,7 +109,8 @@ public class MainActivity extends AppCompatActivity {
             public void onRefresh() {
 
                 new Handler().postDelayed(new Runnable() {
-                    @Override public void run() {
+                    @Override
+                    public void run() {
                         swipeLayout.setRefreshing(false);
                     }
                 }, 5000);
@@ -105,10 +137,13 @@ public class MainActivity extends AppCompatActivity {
 
 // locale params
         //params.put("lang", "fr");
+
+
 //
+        Log.d("CORDS", "lat = " + lat + " long = " + longitude);
         coordinate = CoordinateOptions.builder()
-                .latitude(37.7577)
-                .longitude(-122.4376).build();
+                .latitude(lat)
+                .longitude(longitude).build();
 
         double mLatitude = coordinate.latitude();
         double mLongitude = coordinate.longitude();
@@ -141,7 +176,41 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
 
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            lat = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
+
+            Log.d("CORDS", "lat = " + lat + " long = " + longitude);
+
+        }
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Toast.makeText(this,"SHIT FAILED",Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(this,"SHIT FAILED",Toast.LENGTH_SHORT).show();
+
+
+    }
 
 
     private class DownloadUrlTask extends AsyncTask<ArrayList<String>, Void, Void> {
@@ -313,7 +382,7 @@ public class MainActivity extends AppCompatActivity {
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationStart(Animator animation) {
-                        toolbarSetElevation(verticalOffset == 0 ? 0 : TOOLBAR_ELEVATION);
+                        toolbarSetElevation(verticalOffset == 0 ? 0 : TOOLBAR_ELEVATION);                                                                                                                                                                                                                                                                   
                     }
                 });
     }
@@ -349,4 +418,8 @@ public class MainActivity extends AppCompatActivity {
     }//onActivityResult
 
 
+
 }
+
+
+

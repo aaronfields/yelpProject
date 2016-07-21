@@ -15,7 +15,6 @@ import com.google.android.gms.location.LocationServices;
 
 public class LocationActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
-    // Tracker mTracker;
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     double lat, longitude;

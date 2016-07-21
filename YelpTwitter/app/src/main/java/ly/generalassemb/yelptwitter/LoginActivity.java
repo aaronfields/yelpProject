@@ -44,26 +44,6 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-//        Intent intent = new Intent(LoginActivity.this, CheeseActivity.class);
-//        startActivity(intent);
-
-//        mAuthListener = new FirebaseAuth.AuthStateListener() {
-//            @Override
-//            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-//                FirebaseUser user = firebaseAuth.getCurrentUser();
-//                if (user != null) {
-//                    // User is signed in
-//                    Log.d("TAG", "onAuthStateChanged:signed_in:" + user.getUid());
-//                } else {
-//                    // User is signed out
-//                    Log.d("TAG", "onAuthStateChanged:signed_out");
-//                }
-//                // [START_EXCLUDE]
-//                //updateUI(user);
-//                // [END_EXCLUDE]
-//            }
-//        };
-
         loginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);
         loginButton.setCallback(new Callback<TwitterSession>() {
             @Override
@@ -80,10 +60,7 @@ public class LoginActivity extends AppCompatActivity {
                 twitter_userId = session.getUserId();
                 twitter_image_url = " https://twitter.com/" + twitter_username + "/profile_image?size=original";
 
-//                Intent intent = new Intent(LoginActivity.this, CheeseActivity.class);
-//                intent.putExtra(KEY_USERNAME, twitter_username);
-//                intent.putExtra(KEY_USERID, twitter_userId);
-//                startActivity(intent);
+
 
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("username",twitter_username);
@@ -103,19 +80,6 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        mAuth.addAuthStateListener(mAuthListener);
-//    }
-//
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        if (mAuthListener != null) {
-//            mAuth.removeAuthStateListener(mAuthListener);
-//        }
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -124,72 +88,6 @@ public class LoginActivity extends AppCompatActivity {
         // Activity that it triggered.
         loginButton.onActivityResult(requestCode, resultCode, data);
     }
-
-//    private void handleTwitterSession(TwitterSession session) {
-//        Log.d("TAG", "handleTwitterSession:" + session);
-//        // [START_EXCLUDE silent]
-//        //showProgressDialog();
-//        // [END_EXCLUDE]
-//
-//        AuthCredential credential = TwitterAuthProvider.getCredential(
-//                session.getAuthToken().token,
-//                session.getAuthToken().secret);
-//
-//        mAuth.signInWithCredential(credential)
-//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        Log.d("TAG", "signInWithCredential:onComplete:" + task.isSuccessful());
-//
-//                        // If sign in fails, display a message to the user. If sign in succeeds
-//                        // the auth state listener will be notified and logic to handle the
-//                        // signed in user can be handled in the listener.
-//                        if (!task.isSuccessful()) {
-//                            Log.w("TAG", "signInWithCredential", task.getException());
-//                            Toast.makeText(LoginActivity.this, "Authentication failed.",
-//                                    Toast.LENGTH_SHORT).show();
-//                        }
-//
-////                        // [START_EXCLUDE]
-////                        hideProgressDialog();
-////                        // [END_EXCLUDE]
-//                    }
-//                });
-//    }
-    // [END auth_with_twitter]
-
-//    private void signOut() {
-//        mAuth.signOut();
-//        Twitter.logOut();
-//
-//        updateUI(null);
-//    }
-
-//    private void updateUI(FirebaseUser user) {
-//        hideProgressDialog();
-//        if (user != null) {
-//            mStatusTextView.setText(getString(R.string.twitter_status_fmt, user.getDisplayName()));
-//            mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
-//
-//            findViewById(R.id.button_twitter_login).setVisibility(View.GONE);
-//            findViewById(R.id.button_twitter_signout).setVisibility(View.VISIBLE);
-//        } else {
-//            mStatusTextView.setText(R.string.signed_out);
-//            mDetailTextView.setText(null);
-//
-//            findViewById(R.id.button_twitter_login).setVisibility(View.VISIBLE);
-//            findViewById(R.id.button_twitter_signout).setVisibility(View.GONE);
-//        }
-//    }
-//
-//    @Override
-//    public void onClick(View v) {
-//        switch (v.getId()) {
-//            case R.id.button_twitter_signout:
-//                signOut();
-//                break;
-//        }
-//    }
 
 
 
