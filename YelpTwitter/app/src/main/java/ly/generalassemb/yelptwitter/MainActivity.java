@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         tToolbar.setTitle("Munchies Nearby!");
         tToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(tToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ids = new ArrayList<>();
 

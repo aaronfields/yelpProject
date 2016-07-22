@@ -1,6 +1,7 @@
 package ly.generalassemb.yelptwitter;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -41,6 +42,8 @@ import java.util.regex.Pattern;
 import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
 import retrofit2.Response;
+import xyz.hanks.library.SmallBang;
+import xyz.hanks.library.SmallBangListener;
 
 public class CheeseActivity extends AppCompatActivity {
     LinearLayout mapsButton;
@@ -58,6 +61,9 @@ public class CheeseActivity extends AppCompatActivity {
     private String hashtag;
     private ListView listView;
     private String hello;
+    SmallBang mSmallBang;
+    ImageView saveIcon;
+    ImageView mapIcon;
 
     //public static final String EXTRA_NAME = "restaurant_name";
     private String SEARCH_QUERY;
@@ -74,8 +80,19 @@ public class CheeseActivity extends AppCompatActivity {
         businessId = intent.getStringExtra("name_id");
         imageURL = intent.getStringExtra("image_url");
 
+        saveIcon = (ImageView)findViewById(R.id.saveIcon);
+        mapIcon = (ImageView)findViewById(R.id.mapIcon);
+
         yelpAPI = MainActivity.yelpAPI;
         call = yelpAPI.getBusiness(businessId);
+
+        mSmallBang = SmallBang.attach2Window(this);
+        int oneColorValue = Color.parseColor("#f5aa5b");
+        int twoColorValue = Color.parseColor("#ee573e");
+        int threeColorValue = Color.parseColor("#f17c45");
+        int[] ints = new int[] {twoColorValue, oneColorValue, threeColorValue};
+
+        mSmallBang.setColors(ints);
 
         new BusinessInfoTask().execute();
 
@@ -195,6 +212,16 @@ public class CheeseActivity extends AppCompatActivity {
             mapsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    mSmallBang.bang(view.findViewById(R.id.mapIcon), 20, new SmallBangListener() {
+                        @Override
+                        public void onAnimationStart() {
+                        }
+
+                        @Override
+                        public void onAnimationEnd() {
+
+                        }
+                    });
                     goToMaps();
                 }
             });
@@ -202,6 +229,17 @@ public class CheeseActivity extends AppCompatActivity {
             addButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    mSmallBang.bang(view.findViewById(R.id.saveIcon), 40, new SmallBangListener() {
+                        @Override
+                        public void onAnimationStart() {
+                            saveIcon.setImageResource(R.drawable.ic_check_black_24dp);
+                        }
+
+                        @Override
+                        public void onAnimationEnd() {
+
+                        }
+                    });
                     addToLikes();
                 }
             });

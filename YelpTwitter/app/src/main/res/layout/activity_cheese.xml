@@ -111,6 +111,7 @@
                 android:id="@+id/mapIcon"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:layout_marginTop="3dp"
                 android:layout_marginLeft="-30dp"
                 android:src="@drawable/ic_room_black_24dp"/>
             <TextView
@@ -140,6 +141,7 @@
                     android:id="@+id/saveIcon"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
+                    android:layout_marginTop="3dp"
                     android:layout_marginLeft="-30dp"
                     android:src="@drawable/ic_add_circle_black_24dp"/>
                 <TextView
