@@ -113,6 +113,7 @@ public class LikesAdapter extends RecyclerView.Adapter<LikesAdapter.likesViewHol
             public void onClick(DialogInterface dialog, int id) {
                 String getKey = mKeys.get(position);
                 foodList.remove(position);
+                mKeys.remove(position);
                 userRef.child(getKey).removeValue();
                 dialog.dismiss();
             }
