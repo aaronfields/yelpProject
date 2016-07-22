@@ -1,7 +1,9 @@
 package ly.generalassemb.yelptwitter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,12 +25,13 @@ public class LikesAdapter extends RecyclerView.Adapter<LikesAdapter.likesViewHol
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference userRef = database.getReference("users").child(ResultsSingleton.getInstance().getUserName());
-
     LayoutInflater inflater;
     List<Food> foodList;
+    List<String> mKeys;
     Context context;
-    public LikesAdapter(List<Food> list, Context context) {
+    public LikesAdapter(List<Food> list,List<String> keys, Context context) {
         this.foodList = list;
+        this.mKeys = keys;
         this.context = context;
     }
 
@@ -72,6 +75,7 @@ public class LikesAdapter extends RecyclerView.Adapter<LikesAdapter.likesViewHol
             this.context = context;
 
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
             mImage = (ImageView) itemView.findViewById(R.id.food_image);
             mName = (TextView) itemView.findViewById(R.id.business_name);
 
@@ -91,15 +95,36 @@ public class LikesAdapter extends RecyclerView.Adapter<LikesAdapter.likesViewHol
 
         @Override
         public boolean onLongClick(View view) {
-            int position = getAdapterPosition();
+            int positionLiked = getAdapterPosition();
             // TODO: set up removal on clicks
+            createAndShowAlertDialog(positionLiked);
 
-            Food food = foodList.get(position);
-            //userRef.get
 
 
             return false;
         }
+    }
+    private void createAndShowAlertDialog(Integer mPosition) {
+        final int position = mPosition;
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.context);
+        builder.setTitle("Remove");
+        builder.setMessage("Are you sure you want to remove this dish?");
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                String getKey = mKeys.get(position);
+                foodList.remove(position);
+                userRef.child(getKey).removeValue();
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
     }
 

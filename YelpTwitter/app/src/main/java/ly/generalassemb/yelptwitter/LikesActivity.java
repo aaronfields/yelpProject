@@ -15,20 +15,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-;
-
-
 public class LikesActivity extends AppCompatActivity {
     LikesAdapter mAdapter;
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
-    List<Food> foodList;
-
+    List<String>keys;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-
-    //TODO plug in user name into child and retrive user likes and display them
     DatabaseReference userRef = database.getReference("users").child(ResultsSingleton.getInstance().getUserName());
 
     @Override
@@ -36,20 +29,17 @@ public class LikesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_likes);
 
-        Log.d("LIKES","Likes started!");
-
         mRecyclerView = (RecyclerView) findViewById(R.id.likes_recycler);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-       // mAdapter = new LikesAdapter(foodList, LikesActivity.this);
-      //  mRecyclerView.setAdapter(mAdapter);
-
+        keys = new ArrayList<>();
         final List<Food> fList = new ArrayList<>();
         ChildEventListener listener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Log.d("ADDED", "something was added:" + dataSnapshot.getKey());
-
+                String key = dataSnapshot.getKey();
+                keys.add(key);
 
                 // This iterates through the different children of the given user and retrieves
                 // the values for the current Users likes
@@ -61,14 +51,8 @@ public class LikesActivity extends AppCompatActivity {
                     Food m = new Food(url,id, name);
                     fList.add(m);
                     i += 2;
-                    Log.d("URL", "" + url);
-                    Log.d("NAME", "" + name);
-                    Log.d("ID", "" + id);
-
-
-
-                    Log.d("Food", "" + fList.size());
-                    mAdapter = new LikesAdapter(fList, LikesActivity.this);
+                    Log.d("Food", "" + keys.size());
+                    mAdapter = new LikesAdapter(fList,keys, LikesActivity.this);
                     mRecyclerView.setAdapter(mAdapter);
                 }
 
@@ -82,7 +66,8 @@ public class LikesActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+            Log.d("REMOVED","sumshitwasremoved");
+                mAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -101,20 +86,7 @@ public class LikesActivity extends AppCompatActivity {
 
 
 
-//        mSubmit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Food item = new Food("new url here", "new business name here", "new business id here");
-//                //userRef.child("new user").setValue("liked");
-//                String key = userRef.push().getKey().toString();
-//
-//                Map<String, Object> childUpdates = new HashMap<String, Object>();
-//
-//                childUpdates.put(key, item);
-//                userRef.push().setValue(item);
-//
-//            }
-//        });
+
 
     }
 

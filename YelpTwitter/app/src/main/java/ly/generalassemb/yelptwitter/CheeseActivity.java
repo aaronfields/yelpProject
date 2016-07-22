@@ -22,6 +22,8 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.tweetui.SearchTimeline;
 import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
 import com.yelp.clientlib.connection.YelpAPI;
@@ -37,6 +39,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -59,9 +62,9 @@ public class CheeseActivity extends AppCompatActivity {
 
     //public static final String EXTRA_NAME = "restaurant_name";
     private String SEARCH_QUERY;
-
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference userRef = database.getReference("users").child(ResultsSingleton.getInstance().getUserName());
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +114,7 @@ public class CheeseActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            Log.d("SEARCH", "yelp: "+response.body());
+           // Log.d("SEARCH", "yelp: "+response.body());
 
             String address = "";
             for (int i = 0; i< response.body().location().displayAddress().size(); i++) {
@@ -119,7 +122,7 @@ public class CheeseActivity extends AppCompatActivity {
             }
 
             address = address.substring(0, (address.length() - 2));
-            Log.d("SEARCH", "yelp: "+address);
+           //Log.d("SEARCH", "yelp: "+address);
             BusinessYelpApp business = new BusinessYelpApp(response.body().name(), response.body().ratingImgUrl(), address);
 
             Document doc = null;
@@ -130,12 +133,12 @@ public class CheeseActivity extends AppCompatActivity {
             }
 
             Elements all = doc.getAllElements();
-            Log.d("RESPONSE", "154: " + all.toString());
+            //Log.d("RESPONSE", "154: " + all.toString());
             Pattern p = Pattern.compile("(?is)\"src_high_res\": \"(.+?)\"");
             Matcher m = p.matcher(all.toString());
             imageUrls = new ArrayList<>();
             int i = 0;
-            while (m.find() && (i < 16)) {
+            while (m.find() && (i < 18)) {
                 imageUrls.add("http:"+m.group(1));
                 i++;
             }
@@ -166,12 +169,17 @@ public class CheeseActivity extends AppCompatActivity {
                         .into(imageView);
             }
 
-            hashtag = businessForDisplay.getmName().toString()
+            hashtag = businessForDisplay.getmName()
                     .replace(" ", "")
                     .replace("!", "")
                     .replace("$", "")
                     .replace("&", "");
             Log.d("HASHTAG", hashtag);
+
+            if (!Fabric.isInitialized()) {
+                TwitterAuthConfig authConfig = new TwitterAuthConfig(LoginActivity.TWITTER_KEY,LoginActivity.TWITTER_SECRET);
+                Fabric.with(CheeseActivity.this, new Twitter(authConfig));
+            }
 
             final SearchTimeline searchTimeline = new SearchTimeline.Builder()
                     .query("#"+hashtag)
@@ -235,13 +243,13 @@ public class CheeseActivity extends AppCompatActivity {
 
     public void addToLikes(){
         String userName = ResultsSingleton.getInstance().getUserName();
-        String userId = ResultsSingleton.getInstance().getUserID();
         String businessName = businessForDisplay.getmName();
         String businessId = this.businessId;
         String businessUrl = imageURL;
         Toast.makeText(CheeseActivity.this, "Added!", Toast.LENGTH_SHORT).show();
-        //TODO: Save to Firebase
-        Food likedObject = new Food(imageURL,businessId,businessName);
+
+        DatabaseReference userRef = database.getReference("users").child(userName);
+        Food likedObject = new Food(businessUrl,businessId,businessName);
         userRef.push().setValue(likedObject);
 
 

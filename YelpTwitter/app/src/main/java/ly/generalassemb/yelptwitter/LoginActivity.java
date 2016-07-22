@@ -21,8 +21,8 @@ import io.fabric.sdk.android.Fabric;
 public class LoginActivity extends AppCompatActivity {
 
     // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
-    private static final String TWITTER_KEY = "Uzr84VNnQjD7RJQnXneJTPifp";
-    private static final String TWITTER_SECRET = "XEo4SwCTB85HSe2bw65HSJ45nbHMIObVgjQddJDILzDaYtOXWT";
+    public static final String TWITTER_KEY = "Uzr84VNnQjD7RJQnXneJTPifp";
+    public static final String TWITTER_SECRET = "XEo4SwCTB85HSe2bw65HSJ45nbHMIObVgjQddJDILzDaYtOXWT";
     private TwitterLoginButton loginButton;
 
     public static final String KEY_USERNAME = "username";
@@ -43,7 +43,6 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
 
-
         loginButton = (TwitterLoginButton) findViewById(R.id.twitter_login_button);
         loginButton.setCallback(new Callback<TwitterSession>() {
             @Override
@@ -60,17 +59,16 @@ public class LoginActivity extends AppCompatActivity {
                 twitter_userId = session.getUserId();
                 twitter_image_url = " https://twitter.com/" + twitter_username + "/profile_image?size=original";
 
-
-
+                ResultsSingleton.getInstance().setUserName(twitter_username);
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("username",twitter_username);
+                returnIntent.putExtra("username", twitter_username);
                 returnIntent.putExtra("twitterId", twitter_userId);
-                setResult(Activity.RESULT_OK,returnIntent);
+                setResult(Activity.RESULT_OK, returnIntent);
                 finish();
 
 
-
             }
+
             @Override
             public void failure(TwitterException exception) {
                 Log.d("TwitterKit", "Login with Twitter failure", exception);
@@ -88,7 +86,6 @@ public class LoginActivity extends AppCompatActivity {
         // Activity that it triggered.
         loginButton.onActivityResult(requestCode, resultCode, data);
     }
-
 
 
 }
