@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             getLocation();
                         }
                     }
-                }, 7000);
+                }, 4000);
             }
         });
         swipeLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
@@ -149,14 +149,14 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         protected Void doInBackground(ArrayList<String>... ids) {
             int start= 0;
             int finish= 5;
-            if(revolver > 1){
+            if(revolver > 3){
                 revolver = 0;
             }
                 switch (revolver) {
                     case 0:
-                        if(ids[0].size() > 10) {
+                        if(ids[0].size() > 5) {
                             start = 0;
-                            finish = 10;
+                            finish = 5;
                             break;
                         } else {
                             start = 0;
@@ -164,13 +164,34 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             break;
                         }
                     case 1:
-                        if(ids[0].size() == 20) {
+                        if(ids[0].size() > 10) {
+                            start = 5;
+                            finish = 10;
+                            break;
+                        } else {
+                            start = 5;
+                            finish = ids[0].size();
+                            break;
+                        }
+                    case 2:
+                        if(ids[0].size() > 15) {
                             start = 10;
-                            finish = 20;
+                            finish = 15;
                             break;
                         } else {
                             start = 10;
                             finish = ids[0].size();
+                            break;
+                        }
+                    case 3:
+                        if(ids[0].size() == 20) {
+                            start = 15;
+                            finish = 20;
+                            break;
+                        } else {
+                            start = 15;
+                            finish = ids[0].size();
+                            break;
                         }
                 }
 

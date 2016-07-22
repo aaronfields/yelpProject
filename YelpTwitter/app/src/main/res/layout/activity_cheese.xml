@@ -91,28 +91,67 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:orientation="horizontal">
-        <Button
+        <LinearLayout
             android:id="@+id/mapsButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            android:elevation="0dp"
             android:text="MAP"
-            android:backgroundTint="@color/colorPrimary"
-            android:textColor="#FFFFFF"/>
-            <Button
-                android:id="@+id/addButton"
-                android:layout_width="match_parent"
+            android:textSize="14sp"
+            android:paddingLeft="16dp"
+            android:background="#ffffff"
+            android:gravity="center"
+            >
+            <ImageView
+                android:id="@+id/mapIcon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="-30dp"
+                android:src="@drawable/ic_room_black_24dp"/>
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Map"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/mapIcon"
+                android:textColor="#000000"
+                android:textSize="20sp"/>
+        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/saveButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_marginRight="20dp"
-                android:layout_marginLeft="10dp"
-                android:text="SAVE"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="@color/colorPrimary"/>
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:elevation="0dp"
+                android:text="MAP"
+                android:textSize="14sp"
+                android:paddingLeft="16dp"
+                android:background="?attr/colorPrimary"
+                android:gravity="center"
+                >
+                <ImageView
+                    android:id="@+id/saveIcon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="-30dp"
+                    android:src="@drawable/ic_add_circle_black_24dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Save"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@id/saveIcon"
+                    android:textColor="#ffffff"
+                    android:textSize="20sp"/>
+            </LinearLayout>
         </LinearLayout>
 
 

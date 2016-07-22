@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -44,8 +43,8 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class CheeseActivity extends AppCompatActivity {
-    Button mapsButton;
-    Button addButton;
+    LinearLayout mapsButton;
+    LinearLayout addButton;
     TextView businessNameDisplay;
     TextView businessAddressDisplay;
     YelpAPI yelpAPI;
@@ -89,8 +88,8 @@ public class CheeseActivity extends AppCompatActivity {
         businessNameDisplay.setText("");
         businessAddressDisplay.setText("");
 
-        mapsButton = (Button)findViewById(R.id.mapsButton);
-        addButton = (Button)findViewById(R.id.addButton);
+        mapsButton = (LinearLayout) findViewById(R.id.mapsButton);
+        addButton = (LinearLayout) findViewById(R.id.saveButton);
 
         collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
