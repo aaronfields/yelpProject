@@ -221,6 +221,7 @@ public class CheeseActivity extends AppCompatActivity {
                         public void onAnimationEnd() {
 
                         }
+
                     });
                     goToMaps();
                 }
