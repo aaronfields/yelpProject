@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     private static final int TOOLBAR_ELEVATION = 4;
     static final int REQUEST_LOCATION = 0;
     boolean isConnected;
+    private boolean loading = true;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,8 +99,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         parameters.put("limit", "20");
         //location = "Austin, tx";
 
-        //TODO: wrap in if statement
-        if(ResultsSingleton.getInstance().isLoggedIn()) {
+
+        if(!ResultsSingleton.getInstance().isLoggedIn()) {
             Intent i = new Intent(this, LoginActivity.class);
             startActivityForResult(i, 1);
         }
@@ -116,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 new Handler().postDelayed(new Runnable() {
                     @Override public void run() {
                         swipeLayout.setRefreshing(false);
-                        //revolver ++;
+                        revolver ++;
                         if(isConnected) {
                             getLocation();
                         }
@@ -147,26 +149,29 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         protected Void doInBackground(ArrayList<String>... ids) {
             int start= 0;
             int finish= 5;
-            if(revolver > 4){
+            if(revolver > 1){
                 revolver = 0;
             }
                 switch (revolver) {
                     case 0:
-                        start = 0;
-                        finish = 5;
-                        break;
+                        if(ids[0].size() > 10) {
+                            start = 0;
+                            finish = 10;
+                            break;
+                        } else {
+                            start = 0;
+                            finish = ids[0].size();
+                            break;
+                        }
                     case 1:
-                        start = 5;
-                        finish = 10;
-                        break;
-                    case 2:
-                        start = 10;
-                        finish = 15;
-                        break;
-                    case 3:
-                        start = 15;
-                        finish = 20;
-                        break;
+                        if(ids[0].size() == 20) {
+                            start = 10;
+                            finish = 20;
+                            break;
+                        } else {
+                            start = 10;
+                            finish = ids[0].size();
+                        }
                 }
 
             foodList = new ArrayList<>();
@@ -224,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             mRecyclerView.setAdapter(mAdapter);
 
             // We need to detect scrolling changes in the RecyclerView
-            mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
                 // Keeps track of the overall vertical offset in the list
                 int verticalOffset;
@@ -259,6 +264,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     scrollingUp = dy > 0;
                     int toolbarYOffset = (int) (dy - tToolbar.getTranslationY());
                     tToolbar.animate().cancel();
+
+
+
                     if (scrollingUp) {
                         if (toolbarYOffset < tToolbar.getHeight()) {
                             if (verticalOffset > tToolbar.getHeight()) {
@@ -443,6 +451,12 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         getLocation.putExtra("location", "location");
         startService(getLocation);
     }
+
+    public void onScrolledToBottom(){
+        //revolver ++;
+    }
+
+
 }
 
 
