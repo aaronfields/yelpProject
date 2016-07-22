@@ -65,8 +65,6 @@ public class CheeseActivity extends AppCompatActivity {
     SmallBang mSmallBang;
     ImageView saveIcon;
     ImageView mapIcon;
-
-    //public static final String EXTRA_NAME = "restaurant_name";
     private String SEARCH_QUERY;
     FirebaseDatabase database = FirebaseDatabase.getInstance();
 
@@ -116,8 +114,6 @@ public class CheeseActivity extends AppCompatActivity {
 
         listView = (ListView) findViewById(R.id.twitter_list);
 
-
-
     }
 
     private class BusinessInfoTask extends AsyncTask<Void, Void, BusinessYelpApp> {
@@ -131,15 +127,12 @@ public class CheeseActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-           // Log.d("SEARCH", "yelp: "+response.body());
-
             String address = "";
             for (int i = 0; i< response.body().location().displayAddress().size(); i++) {
                 address += response.body().location().displayAddress().get(i) +", ";
             }
 
             address = address.substring(0, (address.length() - 2));
-           //Log.d("SEARCH", "yelp: "+address);
             BusinessYelpApp business = new BusinessYelpApp(response.body().name(), response.body().ratingImgUrl(), address);
 
             Document doc = null;
@@ -150,12 +143,11 @@ public class CheeseActivity extends AppCompatActivity {
             }
 
             Elements all = doc.getAllElements();
-            //Log.d("RESPONSE", "154: " + all.toString());
             Pattern p = Pattern.compile("(?is)\"src_high_res\": \"(.+?)\"");
             Matcher m = p.matcher(all.toString());
             imageUrls = new ArrayList<>();
             int i = 0;
-            while (m.find() && (i < 18)) {
+            while (m.find() && (i < 10)) {
                 imageUrls.add("http:"+m.group(1));
                 i++;
             }
@@ -266,7 +258,7 @@ public class CheeseActivity extends AppCompatActivity {
             case R.id.action_tweet:
                 TweetComposer.Builder builder = new TweetComposer.Builder(this)
                 .text("#"+hashtag);
-                //.image(myImageUri);
+
                 builder.show();
 
                 final SearchTimeline searchTimeline = new SearchTimeline.Builder()
@@ -311,11 +303,5 @@ public class CheeseActivity extends AppCompatActivity {
 
 
     }
-
-//    @Override
-//    public void onBackPressed() {
-//        Intent intent = new Intent(CheeseActivity.this, MainActivity.class);
-//        startActivity(intent);
-//    }
 }
 
