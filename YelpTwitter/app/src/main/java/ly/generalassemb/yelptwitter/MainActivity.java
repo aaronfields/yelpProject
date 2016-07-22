@@ -83,12 +83,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         IntentFilter filter = new IntentFilter();
         filter.addAction("coordinatesLoaded");
 
-
-
+//        Intent intent = new Intent(MainActivity.this, TweetActivity.class);
+//        startActivity(intent);
 
         checkConnection();
         checkPermissions();
-
 
         YelpAPIFactory apiFactory = new YelpAPIFactory(consumerKey, consumerSecret, token, tokenSecret);
         yelpAPI = apiFactory.createAPI();
@@ -97,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         parameters.put("term", "food");
         parameters.put("limit", "20");
         //location = "Austin, tx";
-
 
         if(!ResultsSingleton.getInstance().isLoggedIn()) {
             Intent i = new Intent(this, LoginActivity.class);
@@ -133,8 +131,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 android.R.color.holo_green_light,
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
-
-
 
         registerReceiver(mReceiver,filter);
 

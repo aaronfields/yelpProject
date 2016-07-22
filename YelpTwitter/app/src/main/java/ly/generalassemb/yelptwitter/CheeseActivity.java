@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 import com.twitter.sdk.android.tweetui.SearchTimeline;
 import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
 import com.yelp.clientlib.connection.YelpAPI;
@@ -251,7 +252,7 @@ public class CheeseActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.restaurant_menu, menu);
+        getMenuInflater().inflate(R.menu.menu2, menu);
         return true;
     }
 
@@ -261,6 +262,24 @@ public class CheeseActivity extends AppCompatActivity {
             case R.id.action_likes:
                 Intent intent = new Intent(CheeseActivity.this, LikesActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.action_tweet:
+                TweetComposer.Builder builder = new TweetComposer.Builder(this)
+                .text("#"+hashtag);
+                //.image(myImageUri);
+                builder.show();
+
+                final SearchTimeline searchTimeline = new SearchTimeline.Builder()
+                        .query("#"+hashtag)
+                        .build();
+                final TweetTimelineListAdapter adapter = new TweetTimelineListAdapter.Builder(CheeseActivity.this)
+                        .setTimeline(searchTimeline)
+                        .build();
+
+                listView.setAdapter(adapter);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    listView.setNestedScrollingEnabled(true);
+                }
                 break;
 
         }
