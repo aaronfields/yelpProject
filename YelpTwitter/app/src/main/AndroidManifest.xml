@@ -37,6 +37,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".LikesActivity"
+            android:label="My Munchies"
             android:parentActivityName=".CheeseActivity">
         </activity>
         <service android:name=".LocationService" />
