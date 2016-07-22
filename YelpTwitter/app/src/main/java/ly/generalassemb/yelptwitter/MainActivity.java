@@ -21,10 +21,10 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.animation.LinearInterpolator;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.yelp.clientlib.connection.YelpAPI;
 import com.yelp.clientlib.connection.YelpAPIFactory;
 import com.yelp.clientlib.entities.Business;
@@ -37,11 +37,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -86,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         filter.addAction("coordinatesLoaded");
 
 
+
+
         checkConnection();
         checkPermissions();
 
@@ -106,6 +106,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         tToolbar = (Toolbar) findViewById(R.id.toolbar);
         revolver = 0;
+        tToolbar.setTitle("Munchies Nearby!");
+        tToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+        setSupportActionBar(tToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ids = new ArrayList<>();
 
@@ -486,6 +490,26 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
     public void onScrolledToBottom(){
         //revolver ++;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.restaurant_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_likes:
+                Intent intent = new Intent(MainActivity.this, LikesActivity.class);
+                startActivity(intent);
+                break;
+
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 

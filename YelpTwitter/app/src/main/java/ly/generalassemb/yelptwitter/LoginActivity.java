@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.twitter.sdk.android.Twitter;
 import com.twitter.sdk.android.core.Callback;
@@ -47,14 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
-                // The TwitterSession is also available through:
-                // Twitter.getInstance().core.getSessionManager().getActiveSession()
                 TwitterSession session = result.data;
-                // TODO: Remove toast and use the TwitterSession's userID
-                // with your app's user model
-                String msg = "@" + session.getUserName() + " logged in! (#" + session.getUserId() + ")";
-                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
-
                 twitter_username = session.getUserName();
                 twitter_userId = session.getUserId();
                 twitter_image_url = " https://twitter.com/" + twitter_username + "/profile_image?size=original";
