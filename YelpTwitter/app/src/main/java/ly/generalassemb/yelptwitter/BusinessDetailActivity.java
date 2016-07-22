@@ -46,7 +46,7 @@ import retrofit2.Response;
 import xyz.hanks.library.SmallBang;
 import xyz.hanks.library.SmallBangListener;
 
-public class CheeseActivity extends AppCompatActivity {
+public class BusinessDetailActivity extends AppCompatActivity {
     LinearLayout mapsButton;
     LinearLayout addButton;
     TextView businessNameDisplay;
@@ -166,12 +166,12 @@ public class CheeseActivity extends AppCompatActivity {
 
             LinearLayout layout = (LinearLayout) findViewById(R.id.linear);
             for (int i = 0; i < imageUrls.size(); i++) {
-                ImageView imageView = new ImageView(CheeseActivity.this);
+                ImageView imageView = new ImageView(BusinessDetailActivity.this);
                 imageView.setId(i);
 //
                 int height= layout.getMeasuredHeight();
                 layout.addView(imageView, height, height);
-                Picasso.with(CheeseActivity.this)
+                Picasso.with(BusinessDetailActivity.this)
                         .load(imageUrls.get(i))
                         .resize(height, height)
                         .centerCrop()
@@ -187,13 +187,13 @@ public class CheeseActivity extends AppCompatActivity {
 
             if (!Fabric.isInitialized()) {
                 TwitterAuthConfig authConfig = new TwitterAuthConfig(LoginActivity.TWITTER_KEY,LoginActivity.TWITTER_SECRET);
-                Fabric.with(CheeseActivity.this, new Twitter(authConfig));
+                Fabric.with(BusinessDetailActivity.this, new Twitter(authConfig));
             }
 
             final SearchTimeline searchTimeline = new SearchTimeline.Builder()
                     .query("#"+hashtag)
                     .build();
-            final TweetTimelineListAdapter adapter = new TweetTimelineListAdapter.Builder(CheeseActivity.this)
+            final TweetTimelineListAdapter adapter = new TweetTimelineListAdapter.Builder(BusinessDetailActivity.this)
                     .setTimeline(searchTimeline)
                     .build();
 
@@ -252,7 +252,7 @@ public class CheeseActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_likes:
-                Intent intent = new Intent(CheeseActivity.this, LikesActivity.class);
+                Intent intent = new Intent(BusinessDetailActivity.this, LikesActivity.class);
                 startActivity(intent);
                 break;
             case R.id.action_tweet:
@@ -264,7 +264,7 @@ public class CheeseActivity extends AppCompatActivity {
                 final SearchTimeline searchTimeline = new SearchTimeline.Builder()
                         .query("#"+hashtag)
                         .build();
-                final TweetTimelineListAdapter adapter = new TweetTimelineListAdapter.Builder(CheeseActivity.this)
+                final TweetTimelineListAdapter adapter = new TweetTimelineListAdapter.Builder(BusinessDetailActivity.this)
                         .setTimeline(searchTimeline)
                         .build();
 
@@ -286,7 +286,7 @@ public class CheeseActivity extends AppCompatActivity {
 
         String uri = String.format(Locale.ENGLISH, "geo:0,0?q="+businessForDisplay.getmAddress());
         Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-        CheeseActivity.this.startActivity(mapIntent);
+        BusinessDetailActivity.this.startActivity(mapIntent);
 
     }
 
@@ -295,7 +295,7 @@ public class CheeseActivity extends AppCompatActivity {
         String businessName = businessForDisplay.getmName();
         String businessId = this.businessId;
         String businessUrl = imageURL;
-        Toast.makeText(CheeseActivity.this, "Added!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(BusinessDetailActivity.this, "Added!", Toast.LENGTH_SHORT).show();
 
         DatabaseReference userRef = database.getReference("users").child(userName);
         Food likedObject = new Food(businessUrl,businessId,businessName);

@@ -87,7 +87,7 @@ public class LikesAdapter extends RecyclerView.Adapter<LikesAdapter.likesViewHol
             int position = getAdapterPosition();
 
             Food food = foodList.get(position);
-            Intent intent = new Intent(this.context, CheeseActivity.class);
+            Intent intent = new Intent(this.context, BusinessDetailActivity.class);
             intent.putExtra("name_id", food.getFoodId());
             intent.putExtra("image_url", food.getFoodPic());
             this.context.startActivity(intent);

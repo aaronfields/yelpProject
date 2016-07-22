@@ -26,7 +26,7 @@
         </activity>
         <activity android:name=".TweetActivity">
         </activity>
-        <activity android:name=".CheeseActivity"
+        <activity android:name=".BusinessDetailActivity"
             android:parentActivityName=".MainActivity">
         </activity>
         <activity android:name=".MainActivity">
@@ -39,7 +39,7 @@
         </activity>
         <activity android:name=".LikesActivity"
             android:label="My Munchies"
-            android:parentActivityName=".CheeseActivity">
+            android:parentActivityName=".BusinessDetailActivity">
         </activity>
         <service android:name=".LocationService" />
 

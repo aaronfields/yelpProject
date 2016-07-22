@@ -29,7 +29,6 @@ import com.yelp.clientlib.connection.YelpAPI;
 import com.yelp.clientlib.connection.YelpAPIFactory;
 import com.yelp.clientlib.entities.Business;
 import com.yelp.clientlib.entities.SearchResponse;
-import com.yelp.clientlib.entities.options.BoundingBoxOptions;
 import com.yelp.clientlib.entities.options.CoordinateOptions;
 
 import org.jsoup.Jsoup;
@@ -62,8 +61,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     Map<String, String> parameters;
     public static YelpAPI yelpAPI;
     CoordinateOptions coordinate;
-    BoundingBoxOptions bounds;
-    String location;
     int revolver;
     double mLatitude;
     double mLongitude;
@@ -72,8 +69,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     private static final int TOOLBAR_ELEVATION = 4;
     static final int REQUEST_LOCATION = 0;
     boolean isConnected;
-    private boolean loading = true;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
     static boolean loadedImages;
 
     @Override
@@ -82,9 +77,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         setContentView(R.layout.activity_main);
         IntentFilter filter = new IntentFilter();
         filter.addAction("coordinatesLoaded");
-
-//        Intent intent = new Intent(MainActivity.this, TweetActivity.class);
-//        startActivity(intent);
 
         checkConnection();
         checkPermissions();
@@ -95,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         parameters = new HashMap<>();
         parameters.put("term", "food");
         parameters.put("limit", "20");
-        //location = "Austin, tx";
 
         if(!ResultsSingleton.getInstance().isLoggedIn()) {
             Intent i = new Intent(this, LoginActivity.class);
@@ -107,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         tToolbar.setTitle("Munchies Nearby!");
         tToolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(tToolbar);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ids = new ArrayList<>();
 
@@ -145,13 +135,9 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             mRecyclerView.setLayoutManager(mLayoutManager);
             mAdapter = new PhotoGridAdapter(foodList,MainActivity.this);
             mRecyclerView.setAdapter(mAdapter);
-
         }
-
-
-
-
     }
+
     private class DownloadUrlTask extends AsyncTask<ArrayList<String>, Void, Void> {
 
         @Override
@@ -212,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     Document doc = Jsoup.connect("http://www.yelp.com/biz_photos/" + id + "?tab=food").get();
 
                     Elements all = doc.getAllElements();
-                   // Log.d("RESPONSE", "154: " + all.toString());
                     Pattern p = Pattern.compile("(?is)\"src_high_res\": \"(.+?)\"");
                     Matcher m = p.matcher(all.toString());
 
@@ -224,8 +209,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                         e.printStackTrace();
                     }
 
-                   // Log.d("SEARCH", "yelp: "+response2.body());
-
                     String restaurantName = "";
 
                     restaurantName = response2.body().name();
@@ -233,7 +216,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     int i2 = 0;
                     while (m.find() && (i2 < 16)) {
                         Food itemUrl = new Food("http:" + m.group(1), id, restaurantName);
-                        //Log.d(TAG, "doInBackground: "+itemUrl);
                         foodList.add(itemUrl);
                         i2++;
                     }
@@ -337,7 +319,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 e.printStackTrace();
             }
 
-           // Log.d("SEARCH", "yelp: "+response.body().businesses().size());
             ArrayList<String> businessId = new ArrayList<>();
 
             for(int i = 0; i<response.body().businesses().size(); i++){
@@ -465,6 +446,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             Log.d("SEARCH", "onCreate: You are not connected");
             isConnected = false;
         }
+
     }
     public void checkPermissions(){
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -484,9 +466,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         startService(getLocation);
     }
 
-    public void onScrolledToBottom(){
-        //revolver ++;
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -507,9 +487,4 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         return super.onOptionsItemSelected(item);
     }
-
-
-
 }
-
-

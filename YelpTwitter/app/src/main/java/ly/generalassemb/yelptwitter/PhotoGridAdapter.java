@@ -93,7 +93,7 @@ public class PhotoGridAdapter extends RecyclerView.Adapter<PhotoGridAdapter.myVi
         public void onClick(View view) {
             int position = getAdapterPosition();
             Food food = ResultsSingleton.getInstance().getFoodAtPosition(position);
-            Intent intent = new Intent(this.context, CheeseActivity.class);
+            Intent intent = new Intent(this.context, BusinessDetailActivity.class);
             Bundle bundle = new Bundle();
             bundle.putString("name_id", food.getFoodId());
             bundle.putString("image_url", food.getFoodPic());
