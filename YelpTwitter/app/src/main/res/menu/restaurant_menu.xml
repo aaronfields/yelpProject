@@ -17,7 +17,7 @@
         <!--app:showAsAction="always"/>-->
     <item
         android:id="@+id/action_likes"
-        android:title="Go to Likes"
+        android:title="My Munchies!"
         app:showAsAction="never"/>
 
 </menu>
