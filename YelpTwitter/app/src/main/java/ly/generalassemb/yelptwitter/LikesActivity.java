@@ -37,7 +37,6 @@ public class LikesActivity extends AppCompatActivity {
         ChildEventListener listener = new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                Log.d("ADDED", "something was added:" + dataSnapshot.getKey());
                 String key = dataSnapshot.getKey();
                 keys.add(key);
 
@@ -51,7 +50,6 @@ public class LikesActivity extends AppCompatActivity {
                     Food m = new Food(url,id, name);
                     fList.add(m);
                     i += 2;
-                    Log.d("Food", "" + keys.size());
                     mAdapter = new LikesAdapter(fList,keys, LikesActivity.this);
                     mRecyclerView.setAdapter(mAdapter);
                 }
@@ -66,7 +64,6 @@ public class LikesActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-            Log.d("REMOVED","sumshitwasremoved");
                 mAdapter.notifyDataSetChanged();
             }
 

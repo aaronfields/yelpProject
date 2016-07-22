@@ -23,6 +23,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.animation.LinearInterpolator;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.yelp.clientlib.connection.YelpAPI;
 import com.yelp.clientlib.connection.YelpAPIFactory;
 import com.yelp.clientlib.entities.Business;
@@ -35,9 +37,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     PhotoGridAdapter mAdapter;
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mLayoutManager;
-    ArrayList<Food> foodList;
+    static ArrayList<Food> foodList;
     Call<SearchResponse> call;
     private static final String consumerKey = "4r7d1XOhHp9RI7xbyl3fBw";
     private static final String consumerSecret = "lZSxJRqOFRiHOPoUS2q_qo3CavU";
@@ -72,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     boolean isConnected;
     private boolean loading = true;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
+    static boolean loadedImages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,14 +87,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
 
         checkConnection();
+        checkPermissions();
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION);
-        }
 
         YelpAPIFactory apiFactory = new YelpAPIFactory(consumerKey, consumerSecret, token, tokenSecret);
         yelpAPI = apiFactory.createAPI();
@@ -132,13 +131,23 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 android.R.color.holo_red_light);
 
 
-        foodList = new ArrayList<>();
 
         registerReceiver(mReceiver,filter);
 
-        if(isConnected) {
-            getLocation();
+        if(!loadedImages){
+            foodList = new ArrayList<>();
+            if(isConnected) {
+                getLocation();
+            }
+        }else{
+            mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+            mLayoutManager = new GridLayoutManager(MainActivity.this, 3);
+            mRecyclerView.setLayoutManager(mLayoutManager);
+            mAdapter = new PhotoGridAdapter(foodList,MainActivity.this);
+            mRecyclerView.setAdapter(mAdapter);
+
         }
+
 
 
 
@@ -203,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     Document doc = Jsoup.connect("http://www.yelp.com/biz_photos/" + id + "?tab=food").get();
 
                     Elements all = doc.getAllElements();
-                    Log.d("RESPONSE", "154: " + all.toString());
+                   // Log.d("RESPONSE", "154: " + all.toString());
                     Pattern p = Pattern.compile("(?is)\"src_high_res\": \"(.+?)\"");
                     Matcher m = p.matcher(all.toString());
 
@@ -215,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                         e.printStackTrace();
                     }
 
-                    Log.d("SEARCH", "yelp: "+response2.body());
+                   // Log.d("SEARCH", "yelp: "+response2.body());
 
                     String restaurantName = "";
 
@@ -242,6 +251,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             Collections.shuffle(foodList);
+            loadedImages=true;
             ResultsSingleton.getInstance().setFoodArrayList(foodList);
             mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
             mLayoutManager = new GridLayoutManager(MainActivity.this, 3);
@@ -403,7 +413,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     public void getCoordinates() {
         mLatitude = ResultsSingleton.getInstance().getLatitude();
         mLongitude = ResultsSingleton.getInstance().getLongitude();
-        Log.d("GOTEM", "lat= " + mLatitude + " long= " + mLongitude);
         coordinate = CoordinateOptions.builder()
                 .latitude(mLatitude)
                 .longitude(mLongitude).build();
@@ -419,19 +428,10 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             case REQUEST_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
 
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                 }
                 return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
@@ -466,6 +466,17 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             isConnected = false;
         }
     }
+    public void checkPermissions(){
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_LOCATION);
+        }
+
+
+    }
 
     public void getLocation(){
         Intent getLocation = new Intent(MainActivity.this, LocationService.class);
@@ -476,6 +487,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     public void onScrolledToBottom(){
         //revolver ++;
     }
+
 
 
 }

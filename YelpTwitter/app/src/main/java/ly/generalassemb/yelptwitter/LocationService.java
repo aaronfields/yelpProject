@@ -40,12 +40,7 @@ public class LocationService extends Service implements GoogleApiClient.OnConnec
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("TAG", "Starting Service");
-
         mGoogleApiClient.connect();
-
-        mLastLocation = getLocation(mGoogleApiClient);
-
-
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -68,18 +63,8 @@ public class LocationService extends Service implements GoogleApiClient.OnConnec
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
-
         mLastLocation = getLocation(mGoogleApiClient);
-
-
-       // Log.d("SERVICECORDS", mLastLocation.getLatitude() + " " + mLastLocation.getLongitude());
-      //  Log.d("CORDS", mLastLocation + "");
-
-
         stopSelf();
-
-
     }
 
     @Override
@@ -102,11 +87,7 @@ public class LocationService extends Service implements GoogleApiClient.OnConnec
             ResultsSingleton.getInstance().setLatitude(lat);
             ResultsSingleton.getInstance().setLongitude(longitude);
             Log.d("cords", "lat = " + lat + " long = " + longitude);
-
         }
-
-
-
         return location;
     }
 }
